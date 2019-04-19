@@ -53,9 +53,9 @@ class Data(db.Model):
     Functions to add observations."""
     __tablename__ = "transcriptions"
     index = db.Column(db.Integer, primary_key=True)
-    physician_id = db.Column(db.String(80), nullable=False)
+    id = db.Column(db.String(80), nullable=False)
     # id for specific transcription
-    transcription_id = db.Column(db.Integer, nullable=False)
+    transcription_id = db.Column(db.String(80), nullable=False)
     text = db.Column(db.Text, nullable=False)
     entity = db.Column(db.Text, nullable=True)
     start = db.Column(db.Integer, nullable=True)
@@ -66,14 +66,14 @@ class Data(db.Model):
     tz = pytz.timezone("US/Pacific")
     timestamp = db.Column(db.DateTime, default=datetime.now(tz))
 
-    def __init__(self, physician_id, transcription_id, text, entity,
+    def __init__(self, id, transcription_id, text, entity,
                  start, end, label, subject_id, timestamp):
         """Notes:
          - physician_id should be automatically set after logging in, not input
            each time
          - transcription_id should be  generated per transcription upload"""
         # self.index = index
-        self.physician_id = physician_id
+        self.id = id
         self.transcription_id = transcription_id
         # text per section (i.e. diagnosis, RFV, prescription, etc)
         self.text = text

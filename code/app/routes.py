@@ -27,11 +27,12 @@ def index():
         password = login_form.password.data
         # Look for it in the database.
         user = User.query.filter_by(username=username).first()
-
         # Login and validate the user.
         if user is not None and user.check_password(password):
             login_user(user)
-            return redirect(url_for('upload'))
+            response = redirect(url_for('upload'))
+            response.set_cookie("curr", user.id)
+            return response
         else:
             flash('Invalid username and password combination!')
 
@@ -115,9 +116,8 @@ def results(filename):
 
     form = ModelResultsForm()
     if form.validate_on_submit():
-
-        physician_id = 2
-        transcription_id = 1
+        current_id = request.cookies.get("curr")
+        transcription_id = str(uuid.uuid4())
         row_info = list()
         tz = pytz.timezone("US/Pacific")
         timestamp = datetime.now(tz)
@@ -134,7 +134,7 @@ def results(filename):
             label = row_info[t][2]
             start = re.search(entity, txt).start()
             end = re.search(entity, txt).end() - 1
-            upload_row = Data(physician_id=physician_id,
+            upload_row = Data(id=current_id,
                               transcription_id=transcription_id,
                               text=txt,
                               entity=entity,
@@ -146,9 +146,8 @@ def results(filename):
             db.session.add(upload_row)
         db.session.commit()
 
-        # TODO: query physician id
-        # TODO: autogenerate transcription id (or maybe make this
-        # an identifying string?)
+        # TODO: Maybe include MRN?
+        # TODO: -- Could be useful for querying past transcriptions
 
         return redirect(url_for('upload'))
 
