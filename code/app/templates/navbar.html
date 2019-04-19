@@ -1,5 +1,22 @@
-<nav class="navbar navbar-light" style="background-color: #e3f2fd;" role="navigation">
+<style>
+    .nav.navbar-nav.navbar-left li a,
+    .nav.navbar-nav.navbar-right li a{
+        color: black;
+    }
+    .nav.navbar-nav.navbar-left li a:hover,
+    .nav.navbar-nav.navbar-right li a:hover{
+        color: white;
+    }
+    .nav.navbar-nav.navbar-right .dropdown .dropdown-toggle  {
+        background-color: #70A4CB;
+    }
+</style>
+
+<nav class="navbar navbar-light bg-light navbar-inverse" style="background-color: #70A4CB" role="navigation">
   <div class="navbar-collapse collapse">
+      <a class="navbar-brand" href="/">
+          <img src={{ url_for('static',filename='logo_ftw.png') }} height="40" style="margin-top: -10px;">
+      </a>
     <ul class="nav navbar-nav navbar-left">
       <li class="nav-item">
           <a class="nav-link active" href="/">Home</a>
