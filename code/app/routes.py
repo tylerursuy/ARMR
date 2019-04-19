@@ -81,9 +81,6 @@ def upload():
         # Save file to file_path (instance/ + 'files' + filename)
         f.save(file_path)
 
-        file_dir_path = os.path.join(application.instance_path, 'files')
-        file_path = os.path.join(file_dir_path, filename)
-
         # Convert audio file to text (String)
         r = sr.Recognizer()
         harvard = sr.AudioFile(file_path)
