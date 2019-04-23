@@ -1,7 +1,7 @@
 from pathlib import Path
 import random
 import spacy
-from spacy.matcher import PhraseMatcher
+from spacy.matcher import Matcher, PhraseMatcher
 from spacy.util import minibatch, compounding
 
 TERMINOLOGY = [
@@ -60,12 +60,59 @@ def parse_entities(model, text):
     """model identifies clinical text from transcribed text"""
     diseases = []
     medications = []
+    matcher = Matcher(model.vocab)
+
+    has_method_pattern = [
+        {"ENT_TYPE": "CHEMICAL"},
+        {"LIKE_NUM": True},
+        {"LOWER": "mg"}, {}]
+    matcher.add("HasMethod", None, has_method_pattern)
+
+    no_method_pattern = [
+        {"ENT_TYPE": "CHEMICAL"},
+        {"LIKE_NUM": True},
+        {"LOWER": "mg"}]
+    matcher.add("NoMethod", None, no_method_pattern)
+
+    just_drug_pattern = [{"ENT_TYPE": "CHEMICAL"}]
+    matcher.add("JustDrug", None, just_drug_pattern)
+
     for entity in model(text).ents:
         if entity.label_ == 'DISEASE':
             diseases.append({'name': str(entity)})
-        else:
-            medications.append({'name': str(entity)})
+
+    doc = model(text)
+    matches = matcher(doc)
+    if matches:
+        last_start = None
+        last_end = None
+        for match_id, start, end in matches:
+            string_id = model.vocab.strings[match_id]
+            span = doc[start:end]
+            if start != last_start and last_start is not None:
+                medication = parse_medication(doc[last_start:last_end])
+                if '.' not in medication['name']:
+                    medications.append(medication)
+            last_start = start
+            last_end = end
+        medication = parse_medication(doc[start:end])
+        if '.' not in medication['name']:
+            medications.append(parse_medication(doc[start:end]))
     return diseases, medications
+
+
+def parse_medication(span):
+    if len(span) == 4:
+        method = None if span[-1].text == '.' else span[-1].text
+        return {'name': span[0].text, 'amount': span[1].text,
+                'unit': span[2].text, 'method': method}
+    elif len(span) == 3:
+        method = None if span[-1].text == '.' else span[-1].text
+        return {'name': span[0].text, 'amount': span[1].text,
+                'unit': span[2].text, 'method': method}
+    else:
+        return {'name': span[0].text, 'amount': None,
+                'unit': None, 'method': None}
 
 
 def train(model, train_data, output_dir, n_iter=100):
