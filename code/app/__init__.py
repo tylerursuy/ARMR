@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, flash
 from flask_bootstrap import Bootstrap
 import os
 from config import Config
