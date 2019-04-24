@@ -58,7 +58,7 @@ def register():
         # check to see if username already exists in database
         user_count = User.query.filter_by(username=username).count()
         if user_count > 0:
-            flash('Error - username ' + username ' is taken')
+            flash('Error - username ' + username + ' is taken')
 
         # check to see if passwords match
         elif password != password_confirmation:
