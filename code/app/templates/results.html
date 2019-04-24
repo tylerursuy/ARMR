@@ -25,55 +25,17 @@ Results
 
 <br>
 <center><h1>Results</h1></center>
-<!-- 
-{% for key, value in result.items() %}
-<div class="container">
-	<h2>{{ key.title() }}</h2>
-	<div class="text_box">
-		<h4>Transcription:</h4>
-		{{ '\t' + value['text'] }}
-
-		<h4>Diseases:</h4>
-		<ul>
-			{% for d in value['diseases'] %}
-				<li>{{ d['name'].title() }}</li>
-			{% endfor %}
-		</ul>
-
-		<h4>Medications:</h4>
-		<ul>
-			{% for d in value['medications'] %}
-				<li>{{ d['name'].title() }}</li>
-			{% endfor %}
-		</ul>
-	</div>
-</div>
-{% endfor %} -->
 
 <br>
  <form method="POST"> <!-- post : handle submission -->
     {{ form.hidden_tag() }} 
-    {% for key, value in result.items() %}
+    {% for i in range(len) %}
 	<div class="container">
-		<h2>{{ key.title() }}</h2>
+		<h2>{{ result[i][0].title() }}</h2>
 		<div class="text_box">
-			<h4>Transcription:</h4>
-			{{ '\t' + value['text'] }}
-
-			<h4>Diseases:</h4>
-			<ul>
-				{% for d in value['diseases'] %}
-					<li>{{ d['name'].title() }}</li>
-				{% endfor %}
-			</ul>
-
-			<h4>Medications:</h4>
-			<ul>
-				{% for d in value['medications'] %}
-					<li>{{ d['name'].title() }}</li>
-				{% endfor %}
-			</ul>
-			<center> {{ wtf.form_field(form.medications_1)}} </center>
+			<h5>Transcription:</h5>
+			{{ '\t' + result[i][1]['text'] }}
+			{{ wtf.form_field(form.diseases[i].disease) }}
 		</div>
 	</div>
 	{% endfor %}   

@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, \
 from flask_login import current_user, login_user, login_required, logout_user
 from app.classes import User, Data
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
-    ModelResultsForm
+    ModelResultsForm, DiseaseField
 from app.nlp import prepare_note
 from app import db, login_manager, spacy_model
 from datetime import timedelta, datetime
@@ -93,10 +93,9 @@ def upload():
         example_result = prepare_note(spacy_model, talk_to_text)
 
         """Display the model results."""
-        proper_title_keys = [k.title() for k in list(example_result.keys())]
         mrn = file.mrn.data
         session['example_result'] = example_result
-        session['proper_title_keys'] = proper_title_keys
+
         session['mrn'] = mrn
         # delete the file
         if os.path.exists(file_path):
@@ -112,15 +111,29 @@ def upload():
 @login_required
 def results(filename):
     example_result = session.get('example_result', None)
-    proper_title_keys = session.get('proper_title_keys', None)
     mrn = session.get('mrn', None)
     
-    form = ModelResultsForm(len(example_result))
-    form.medications_1.data = u'\u2022 hope this is a bullet point.\n\u2022 hello'
+    result = list(example_result.items())
+
+    form = ModelResultsForm()
+
+    for i in range(len(example_result)):
+        print(result[i][1]['diseases'])
+
+        d_form = DiseaseField()
+        disease_string = u'\u2022 '
+
+        for d in result[i][1]['diseases']:
+            disease_string += d['name'].title() + u'\n\u2022 '
+
+        d_form.disease = disease_string
+
+        form.diseases.append_entry(d_form)
+
+    # for i in range(len(example_result)):
+    #     print(form.diseases[i].data['disease'])
 
     if form.validate_on_submit():
-
-        print(form.medications_1.data)
 
         current_id = request.cookies.get("curr")
         transcription_id = str(uuid.uuid4())
@@ -153,8 +166,7 @@ def results(filename):
             db.session.add(upload_row)
         db.session.commit()
 
-
         return redirect(url_for('upload'))
 
-    return render_template('results.html', form=form, titles=proper_title_keys,
-                           result=example_result)
+    return render_template('results.html', form=form,
+                           result=result, len=len(result))
