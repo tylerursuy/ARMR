@@ -10,11 +10,6 @@ ARMR
 {% endblock %}
 
 {% block content %}
-
-<head>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-</head>
-
 <style>
     .container {
       width: 20vw;
@@ -25,6 +20,7 @@ ARMR
     }
 </style>
 
+<br>
 <div align="center">
     <figure class="figure">
     <img src={{ url_for('static', filename='logo_ftw.png') }} class="figure-img img-fluid img-rounded">
@@ -50,10 +46,7 @@ ARMR
 </div>
 {% else %}
     <center><h4>{{ current_user.username }}</h4></center>
-    <p>
-    <center><a href="/logout" class="btn btn-default btn-sm">
-          <span class="glyphicon glyphicon-log-out"></span> Log out
-        </a></center>
+    <center><a href="/logout" class="btn btn-primary">Log out</a></center>
 {% endif %}
 
 {% endblock %}
