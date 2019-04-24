@@ -116,6 +116,9 @@ def results(filename):
 
     form = ModelResultsForm()
     if form.validate_on_submit():
+
+        print(form.medications.data)
+
         current_id = request.cookies.get("curr")
         transcription_id = str(uuid.uuid4())
         row_info = list()

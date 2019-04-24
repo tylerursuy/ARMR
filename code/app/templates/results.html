@@ -52,7 +52,8 @@ Results
 
 <br>
  <form method="POST"> <!-- post : handle submission -->
-    {{ form.hidden_tag() }}    
+    {{ form.hidden_tag() }}  
+    <center> {{ wtf.form_field(form.medications)}} </center>  
     <center> {{ wtf.form_field(form.submit)}} </center>
 </form>
 <br>

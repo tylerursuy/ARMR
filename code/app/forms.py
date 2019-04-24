@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, \
-    SelectField, FileField, IntegerField
+    SelectField, FileField, IntegerField, TextAreaField
 from wtforms.validators import DataRequired, InputRequired, ValidationError
 from flask_wtf.file import FileRequired
 from werkzeug import secure_filename
@@ -42,4 +42,5 @@ class UploadFileForm(FlaskForm):
 
 class ModelResultsForm(FlaskForm):
     """Class for uploading file when submitted"""
+    medications = TextAreaField('medications')
     submit = SubmitField('Submit')
