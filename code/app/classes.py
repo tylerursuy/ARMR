@@ -54,6 +54,7 @@ class Data(db.Model):
     __tablename__ = "transcriptions"
     index = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.String(80), nullable=False)
+    mrn = db.Column(db.Integer, nullable=False)
     # id for specific transcription
     transcription_id = db.Column(db.String(80), nullable=False)
     text = db.Column(db.Text, nullable=False)
@@ -66,7 +67,7 @@ class Data(db.Model):
     tz = pytz.timezone("US/Pacific")
     timestamp = db.Column(db.DateTime, default=datetime.now(tz))
 
-    def __init__(self, id, transcription_id, text, entity,
+    def __init__(self, id, mrn, transcription_id, text, entity,
                  start, end, label, subject_id, timestamp):
         """Notes:
          - physician_id should be automatically set after logging in, not input
@@ -74,6 +75,7 @@ class Data(db.Model):
          - transcription_id should be  generated per transcription upload"""
         # self.index = index
         self.id = id
+        self.mrn = mrn
         self.transcription_id = transcription_id
         # text per section (i.e. diagnosis, RFV, prescription, etc)
         self.text = text
