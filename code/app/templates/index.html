@@ -36,6 +36,7 @@ ARMR
 
 {% if not current_user.is_authenticated %}
 <div class="container">
+    {% include 'flash.html' %}
     <form method="POST">
         <br>
         {{ form.hidden_tag() }}

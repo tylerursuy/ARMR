@@ -23,6 +23,7 @@ Register
 
 <center><h2>Create New Account</h2></center>
 <div class="container">
+    {% include 'flash.html' %}
     <br>
     <form method="POST"> <!-- post : handle submission -->
         {{ form.hidden_tag() }}    
