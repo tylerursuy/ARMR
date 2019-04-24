@@ -114,10 +114,13 @@ def results(filename):
     example_result = session.get('example_result', None)
     proper_title_keys = session.get('proper_title_keys', None)
     mrn = session.get('mrn', None)
-    form = ModelResultsForm()
+    
+    form = ModelResultsForm(len(example_result))
+    form.medications_1.data = u'\u2022 hope this is a bullet point.\n\u2022 hello'
+
     if form.validate_on_submit():
 
-        print(form.medications.data)
+        print(form.medications_1.data)
 
         current_id = request.cookies.get("curr")
         transcription_id = str(uuid.uuid4())

@@ -25,7 +25,7 @@ Results
 
 <br>
 <center><h1>Results</h1></center>
-
+<!-- 
 {% for key, value in result.items() %}
 <div class="container">
 	<h2>{{ key.title() }}</h2>
@@ -48,12 +48,35 @@ Results
 		</ul>
 	</div>
 </div>
-{% endfor %}
+{% endfor %} -->
 
 <br>
  <form method="POST"> <!-- post : handle submission -->
-    {{ form.hidden_tag() }}  
-    <center> {{ wtf.form_field(form.medications)}} </center>  
+    {{ form.hidden_tag() }} 
+    {% for key, value in result.items() %}
+	<div class="container">
+		<h2>{{ key.title() }}</h2>
+		<div class="text_box">
+			<h4>Transcription:</h4>
+			{{ '\t' + value['text'] }}
+
+			<h4>Diseases:</h4>
+			<ul>
+				{% for d in value['diseases'] %}
+					<li>{{ d['name'].title() }}</li>
+				{% endfor %}
+			</ul>
+
+			<h4>Medications:</h4>
+			<ul>
+				{% for d in value['medications'] %}
+					<li>{{ d['name'].title() }}</li>
+				{% endfor %}
+			</ul>
+			<center> {{ wtf.form_field(form.medications_1)}} </center>
+		</div>
+	</div>
+	{% endfor %}   
     <center> {{ wtf.form_field(form.submit)}} </center>
 </form>
 <br>

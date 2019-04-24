@@ -40,7 +40,36 @@ class UploadFileForm(FlaskForm):
             raise ValidationError('File type must be .wav')
 
 
+# # form class with static fields
+# class DiseaseField(FlaskForm):
+#     name = TextAreaField('Diseases')
+
+
 class ModelResultsForm(FlaskForm):
     """Class for uploading file when submitted"""
-    medications = TextAreaField('medications')
+    # diseases_1 = TextAreaField('Diseases')
+    # diseases_2 = TextAreaField('Diseases')
+    # diseases_3 = TextAreaField('Diseases')
+    # diseases_4 = TextAreaField('Diseases')
+
+    # medications_1 = TextAreaField('Medications')
+    # medications_2 = TextAreaField('Medications')
+    # medications_3 = TextAreaField('Medications')
+    # medications_4 = TextAreaField('Medications')
+
     submit = SubmitField('Submit')
+
+    def __init__(self, number_of_sections):
+
+        self.diseases = []
+        self.medications = []
+        for i in range(number_of_sections):
+            diseases_i = TextAreaField('Diseases')
+            medication_i = TextAreaField('Medications')
+            self.diseases.append(diseases_i)
+            self.medications.append(medication_i)
+        
+        self.submit = SubmitField('Submit')
+        print(self.diseases)
+        print(self.diseases[0])
+        print(self.diseases[0].data)
