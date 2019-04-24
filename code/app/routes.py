@@ -119,6 +119,7 @@ def upload():
 
             session['example_result'] = example_result
             session['proper_title_keys'] = proper_title_keys
+            session['mrn'] = mrn
 
             # delete the file
             if os.path.exists(file_path):
