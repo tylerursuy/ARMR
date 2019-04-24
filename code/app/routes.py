@@ -34,7 +34,7 @@ def index():
             response.set_cookie("curr", user.id)
             return response
         else:
-            flash('Invalid username and password combination!')
+            flash('Invalid username and password combination')
 
     return render_template('index.html', form=login_form)
 
@@ -51,13 +51,28 @@ def register():
     form = RegistrationForm(request.form, null=True, blank=True)
 
     if form.validate_on_submit():
-        ph_id = str(uuid.uuid4())
-        user = User(ph_id=ph_id,
-                    username=form.username.data,
-                    password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('index'))
+        username = form.username.data
+        password = form.password.data
+        password_confirmation = form.password_confirmation.data
+
+        # check to see if username already exists in database
+        user_count = User.query.filter_by(username=username).count()
+        if user_count > 0:
+            flash('Error - username ' + username + ' is taken')
+
+        # check to see if passwords match
+        elif password != password_confirmation:
+            flash('Error - passwords do not match')
+
+        else:
+            ph_id = str(uuid.uuid4())
+            user = User(ph_id=ph_id,
+                        username=username,
+                        password=password)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('index'))
+
     return render_template('register.html', form=form)
 
 
@@ -152,3 +167,7 @@ def results(filename):
 
     return render_template('results.html', form=form, titles=proper_title_keys,
                            result=example_result)
+
+@application.errorhandler(401)
+def unauthorized(e):
+    return redirect(url_for('index'))
