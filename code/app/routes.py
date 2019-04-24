@@ -94,10 +94,10 @@ def upload():
 
         """Display the model results."""
         proper_title_keys = [k.title() for k in list(example_result.keys())]
-
+        mrn = file.mrn.data
         session['example_result'] = example_result
         session['proper_title_keys'] = proper_title_keys
-
+        session['mrn'] = mrn
         # delete the file
         if os.path.exists(file_path):
             os.remove(file_path)
@@ -113,7 +113,7 @@ def upload():
 def results(filename):
     example_result = session.get('example_result', None)
     proper_title_keys = session.get('proper_title_keys', None)
-
+    mrn = session.get('mrn', None)
     form = ModelResultsForm()
     if form.validate_on_submit():
         current_id = request.cookies.get("curr")
@@ -135,6 +135,7 @@ def results(filename):
             start = re.search(entity, txt).start()
             end = re.search(entity, txt).end() - 1
             upload_row = Data(id=current_id,
+                              mrn=mrn,
                               transcription_id=transcription_id,
                               text=txt,
                               entity=entity,
@@ -146,8 +147,6 @@ def results(filename):
             db.session.add(upload_row)
         db.session.commit()
 
-        # TODO: Maybe include MRN?
-        # TODO: -- Could be useful for querying past transcriptions
 
         return redirect(url_for('upload'))
 
