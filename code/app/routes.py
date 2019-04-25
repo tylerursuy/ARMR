@@ -111,20 +111,17 @@ def upload():
 @login_required
 def results(filename):
     example_result = session.get('example_result', None)
+    result = list(example_result.items())
     mrn = session.get('mrn', None)
     
-    result = list(example_result.items())
-
     form = ModelResultsForm()
 
-    for i in range(len(example_result)):
-        print(result[i][1]['diseases'])
-
+    for i in range(len(result)):
         d_form = DiseaseField()
-        disease_string = u'\u2022 '
+        disease_string = u''
 
         for d in result[i][1]['diseases']:
-            disease_string += d['name'].title() + u'\n\u2022 '
+            disease_string += d['name'].title() + u'\n'
 
         d_form.disease = disease_string
 
