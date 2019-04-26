@@ -151,8 +151,15 @@ def results(filename):
             txt = row_info[t][1]
             entity = row_info[t][3]
             label = row_info[t][2]
-            start = re.search(entity, txt).start()
-            end = re.search(entity, txt).end() - 1
+            
+            if entity in txt:
+                start = re.search(entity, txt).start()
+                end = re.search(entity, txt).end() - 1
+            else:
+                txt = entity
+                start = 0
+                end = len(entity) - 1
+
             upload_row = Data(id=current_id,
                               mrn=mrn,
                               transcription_id=transcription_id,
