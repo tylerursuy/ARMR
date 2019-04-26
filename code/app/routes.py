@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, \
 from flask_login import current_user, login_user, login_required, logout_user
 from app.classes import User, Data
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
-    ModelResultsForm, DiseaseField
+    ModelResultsForm, DiseaseField, MedicationField
 from app.nlp import prepare_note
 from app import db, login_manager, spacy_model
 from datetime import timedelta, datetime
@@ -118,20 +118,24 @@ def results(filename):
 
     for i in range(len(result)):
         d_form = DiseaseField()
+        m_form = MedicationField()
         disease_string = u''
+        medication_string = u''
 
+        print(i, result[i][1])
         for d in result[i][1]['diseases']:
             disease_string += d['name'].title() + u'\n'
 
+        for m in result[i][1]['medications']:
+            medication_string += m['name'].title() + u'\n'
+
         d_form.disease = disease_string
+        m_form.medication = medication_string
 
         form.diseases.append_entry(d_form)
-
-    # for i in range(len(example_result)):
-    #     print(form.diseases[i].data['disease'])
+        form.medications.append_entry(m_form)
 
     if form.validate_on_submit():
-
         current_id = request.cookies.get("curr")
         transcription_id = str(uuid.uuid4())
         row_info = list()

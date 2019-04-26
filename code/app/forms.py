@@ -40,13 +40,19 @@ class UploadFileForm(FlaskForm):
             raise ValidationError('File type must be .wav')
 
 
-# form class with static fields
 class DiseaseField(FlaskForm):
+    """form class with static fields for Disease"""
     disease = TextAreaField()
+
+
+class MedicationField(FlaskForm):
+    """form class with static fields Medication"""
+    medication = TextAreaField()
 
 
 class ModelResultsForm(FlaskForm):
     """Class for uploading file when submitted"""
     diseases = FieldList(FormField(DiseaseField))
+    medications = FieldList(FormField(MedicationField))
     submit = SubmitField('Submit')
 
