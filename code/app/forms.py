@@ -45,4 +45,3 @@ class ModelResultsForm(FlaskForm):
     diseases = FieldList(FormField(DiseaseField))
     medications = FieldList(FormField(MedicationField))
     submit = SubmitField('Submit')
-

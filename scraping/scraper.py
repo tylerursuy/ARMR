@@ -8,7 +8,8 @@ def specialties(link):
     """Get all specialties from transcription website."""
     specialties_page = requests.get(link)
     soup = BeautifulSoup(specialties_page.content, "html.parser")
-    specialties_ = soup.find_all("span", {"class": "collapsing categories expand"})
+    specialties_ = soup.find_all("span", {
+        "class": "collapsing categories expand"})
     specialty_list = [sp.find("a").text for sp in specialties_]
     return specialty_list
 
@@ -17,14 +18,17 @@ def get_transcriptions(link):
     """Get all transcriptions from website"""
     driver = webdriver.Chrome()
     driver.get(link)
-    categories = driver.find_elements_by_css_selector("span.collapsing.categories.expand")
+    categories = driver.find_elements_by_css_selector(
+        "span.collapsing.categories.expand")
     for cat in categories:
         driver.execute_script("return arguments[0].scrollIntoView();", cat)
         time.sleep(0.5)
         expander = cat.find_element_by_css_selector("span.sym")
         expander.click()
-    transcription_items = driver.find_elements_by_css_selector("li.collapsing.categories.item")
-    transcription_links = [item.find_element_by_tag_name("a").get_attribute("href") for item in transcription_items]
+    transcription_items = driver.find_elements_by_css_selector(
+        "li.collapsing.categories.item")
+    transcription_links = [item.find_element_by_tag_name("a").get_attribute(
+        "href") for item in transcription_items]
     transcriptions = []
     start = time.time()
     for i in range(len(transcription_links)):
@@ -50,4 +54,3 @@ transcription_data = get_transcriptions(page_link)
 with open("transcriptions.txt", "w") as file:
     for trn in transcription_data:
         file.write(trn[0] + "--" + "--".join(trn[1]) + "***")
-
