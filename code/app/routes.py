@@ -105,8 +105,6 @@ def upload():
         else:
             print("The file does not exist.")
 
-
-
         return redirect(url_for('results', filename=filename))
     return render_template('upload.html', form=file)
 
@@ -122,12 +120,17 @@ def results(filename):
     form = ModelResultsForm()
 
     if form.validate_on_submit():
-        print('checking')
 
-        print(form.diseases)
+        db_diseases = {}
+        db_meds = {}
+        for i in range(len(form.diseases)):
+            text_field = form.diseases[i].disease.data
+            split_d = [e.rstrip('\r').lower() for e in text_field.split('\n') if e != '']
+            db_diseases[result[i][0]] = split_d
 
-        # for d in form.diseases:
-        #     print(d.disease)
+            text_field = form.medications[i].medication.data
+            split_d = [e.rstrip('\r').lower() for e in text_field.split('\n') if e != '']
+            db_meds[result[i][0]] = split_d
 
         current_id = request.cookies.get("curr")
         transcription_id = str(uuid.uuid4())
@@ -135,11 +138,14 @@ def results(filename):
         tz = pytz.timezone("US/Pacific")
         timestamp = datetime.now(tz)
         for sub in proper_title_keys:
-            txt = example_result[sub.lower()]["text"]
-            for ent_d in example_result[sub.lower()]["diseases"]:
-                row_info.append((sub, txt, "disease", ent_d["name"]))
-            for ent_m in example_result[sub.lower()]["medications"]:
-                row_info.append((sub, txt, "medication", ent_m["name"]))
+            txt = example_result[sub.lower()]["text"].lower()
+
+            for ent_d in db_diseases[sub.lower()]:
+                row_info.append((sub, txt, "disease", ent_d))
+
+            for ent_m in db_meds[sub.lower()]:
+                row_info.append((sub, txt, "medication", ent_m))
+
         for t in range(len(row_info)):
             sub_id = row_info[t][0]
             txt = row_info[t][1]
@@ -166,8 +172,8 @@ def results(filename):
         for i in range(len(result)):
             d_form = DiseaseField()
             m_form = MedicationField()
-            disease_string = u''
-            medication_string = u''
+            disease_string = ''
+            medication_string = ''
 
             for d in result[i][1]['diseases']:
                 disease_string += d['name'].title() + u'\n'
