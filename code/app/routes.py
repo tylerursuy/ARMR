@@ -34,7 +34,7 @@ def index():
             response.set_cookie("curr", user.id)
             return response
         else:
-            flash('Invalid username and password combination!')
+            flash('Invalid username and password combination')
 
     return render_template('index.html', form=login_form)
 
@@ -51,13 +51,28 @@ def register():
     form = RegistrationForm(request.form, null=True, blank=True)
 
     if form.validate_on_submit():
-        ph_id = str(uuid.uuid4())
-        user = User(ph_id=ph_id,
-                    username=form.username.data,
-                    password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('index'))
+        username = form.username.data
+        password = form.password.data
+        password_confirmation = form.password_confirmation.data
+
+        # check to see if username already exists in database
+        user_count = User.query.filter_by(username=username).count()
+        if user_count > 0:
+            flash('Error - username ' + username + ' is taken')
+
+        # check to see if passwords match
+        elif password != password_confirmation:
+            flash('Error - passwords do not match')
+
+        else:
+            ph_id = str(uuid.uuid4())
+            user = User(ph_id=ph_id,
+                        username=username,
+                        password=password)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('index'))
+
     return render_template('register.html', form=form)
 
 
@@ -105,7 +120,40 @@ def upload():
         else:
             print("The file does not exist.")
 
-        return redirect(url_for('results', filename=filename))
+        if filename[-4:] != '.wav':
+            flash('File type must be .wav')
+        elif len(str(mrn)) != 7:
+            flash('MRN must be 7 digits')
+        else:
+            file_dir_path = os.path.join(application.instance_path, 'files')
+            file_path = os.path.join(file_dir_path, filename)
+            # Save file to file_path (instance/ + 'files' + filename)
+            f.save(file_path)
+
+            # Convert audio file to text (String)
+            r = sr.Recognizer()
+            harvard = sr.AudioFile(file_path)
+            with harvard as source:
+                audio = r.record(source)
+            talk_to_text = r.recognize_google(audio)
+
+            # pipe results from talk to text to nlp model
+            example_result = prepare_note(spacy_model, talk_to_text)
+
+            """Display the model results."""
+            proper_title_keys = [k.title() for k in list(example_result.keys())]
+
+            session['example_result'] = example_result
+            session['proper_title_keys'] = proper_title_keys
+            session['mrn'] = mrn
+
+            # delete the file
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            else:
+                print("The file does not exist.")
+
+            return redirect(url_for('results', filename=filename))
     return render_template('upload.html', form=file)
 
 
@@ -196,3 +244,10 @@ def results(filename):
 
         return render_template('results.html', form=form,
                            result=result, len=len(result))
+
+    return render_template('results.html', form=form, titles=proper_title_keys,
+                           result=example_result)
+
+@application.errorhandler(401)
+def unauthorized(e):
+    return redirect(url_for('index'))
