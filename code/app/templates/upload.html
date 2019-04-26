@@ -19,7 +19,20 @@ File Upload
       margin-bottom: 10px;
       border-color: rgba(128,128,128);
     }
+      div#loading {
+      width: 100px;
+      height: 100px;
+      display: none;
+      background: url(/static/loader.gif) no-repeat;
+      cursor: wait;
+    }
 </style>
+
+<script type="text/javascript">// <![CDATA[
+  function loading(){
+    $("#loading").show();
+  }
+// ]]></script>
 
 <br>
 <br>
@@ -37,5 +50,8 @@ File Upload
     </form>
     <br/>
 </div> <!-- /container -->
+<center><div id="loading" style="margin-left:4%;"></div></center>
+
+<script>document.getElementsByClassName("btn-primary")[0].setAttribute("onclick", "loading()");</script>
 
 {% endblock %}
