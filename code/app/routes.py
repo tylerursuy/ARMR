@@ -92,33 +92,8 @@ def upload():
     if file.validate_on_submit():
         f = file.file_selector.data
         filename = secure_filename(f.filename)
-        file_dir_path = os.path.join(application.instance_path, 'files')
-        file_path = os.path.join(file_dir_path, filename)
-        # Save file to file_path (instance/ + 'files' + filename)
-        f.save(file_path)
 
-        # Convert audio file to text (String)
-        r = sr.Recognizer()
-        harvard = sr.AudioFile(file_path)
-        with harvard as source:
-            audio = r.record(source)
-        talk_to_text = r.recognize_google(audio)
-
-        # pipe results from talk to text to nlp model
-        example_result = prepare_note(spacy_model, talk_to_text)
-        proper_title_keys = [k.title() for k in list(example_result.keys())]
-
-        """Display the model results."""
         mrn = file.mrn.data
-        session['example_result'] = example_result
-        session['proper_title_keys'] = proper_title_keys
-
-        session['mrn'] = mrn
-        # delete the file
-        if os.path.exists(file_path):
-            os.remove(file_path)
-        else:
-            print("The file does not exist.")
 
         if filename[-4:] != '.wav':
             flash('File type must be .wav')
