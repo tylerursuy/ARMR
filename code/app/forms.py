@@ -8,7 +8,7 @@ from werkzeug import secure_filename
 
 class RegistrationForm(FlaskForm):
     """A FlaskForm to register a new user."""
-    username = StringField('Username (Email):', validators=[DataRequired()])
+    username = StringField('Email (Username):', validators=[DataRequired()])
     password = PasswordField('Password:', validators=[DataRequired()])
     password_confirmation = PasswordField('Repeat Password:',
                                           validators=[DataRequired()])
@@ -17,14 +17,14 @@ class RegistrationForm(FlaskForm):
 
 class LogInForm(FlaskForm):
     """A FlaskForm to log in an existing user."""
-    username = StringField('Username:', validators=[DataRequired()])
+    username = StringField('Email:', validators=[DataRequired()])
     password = PasswordField('Password:', validators=[DataRequired()])
     submit = SubmitField('Login')
 
 
 class UploadFileForm(FlaskForm):
     """Class for uploading file when submitted"""
-    mrn = IntegerField('Medical Record Number (MRN)',
+    mrn = IntegerField('MRN (Medical Record Number)',
                        validators=[InputRequired()])
     file_selector = FileField('File', validators=[FileRequired()])
     submit = SubmitField('Submit')

@@ -13,36 +13,36 @@ ARMR
 <style>
     .container {
       width: 20vw;
-      border-style: solid;
-      border-width: 1px;
+      <!--border-style: solid;-->
+      <!--border-width: 1px;-->
       margin-bottom: 10px;
       border-color: rgba(128,128,128);
     }
+
+}
 </style>
 
 <br>
-<div align="center">
+<div class="img_box" align="center">
     <figure class="figure">
-    <img src={{ url_for('static', filename='logo_ftw.png') }} class="figure-img img-fluid img-rounded">
+    <img src={{ url_for('static', filename='logo_ftw.png') }} width="85%" height="85%" class="figure-img img-fluid img-rounded">
     </figure>
 
-    <h1>Audio Recorded Medical Records</h1>
+    <h3>Audio Recorded Medical Record</h3>
+
 </div>
-<br>
 
 {% if not current_user.is_authenticated %}
 <div class="container">
     {% include 'flash.html' %}
     <form method="POST">
-        <br>
+        <p>
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
         {{ wtf.form_field(form.password) }}
         <center>{{ wtf.form_field(form.submit)}}</center>
     </form>
-    <br>
     <center><a href="{{url_for('register')}}">Create new account</a></center>
-    <br>
 </div>
 {% else %}
     <center><h4>{{ current_user.username }}</h4></center>
