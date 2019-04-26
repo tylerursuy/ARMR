@@ -91,10 +91,12 @@ def upload():
 
         # pipe results from talk to text to nlp model
         example_result = prepare_note(spacy_model, talk_to_text)
+        proper_title_keys = [k.title() for k in list(example_result.keys())]
 
         """Display the model results."""
         mrn = file.mrn.data
         session['example_result'] = example_result
+        session['proper_title_keys'] = proper_title_keys
 
         session['mrn'] = mrn
         # delete the file
@@ -102,6 +104,8 @@ def upload():
             os.remove(file_path)
         else:
             print("The file does not exist.")
+
+
 
         return redirect(url_for('results', filename=filename))
     return render_template('upload.html', form=file)
@@ -112,30 +116,19 @@ def upload():
 def results(filename):
     example_result = session.get('example_result', None)
     result = list(example_result.items())
+    proper_title_keys = session.get('proper_title_keys', None)
     mrn = session.get('mrn', None)
     
     form = ModelResultsForm()
 
-    for i in range(len(result)):
-        d_form = DiseaseField()
-        m_form = MedicationField()
-        disease_string = u''
-        medication_string = u''
-
-        print(i, result[i][1])
-        for d in result[i][1]['diseases']:
-            disease_string += d['name'].title() + u'\n'
-
-        for m in result[i][1]['medications']:
-            medication_string += m['name'].title() + u'\n'
-
-        d_form.disease = disease_string
-        m_form.medication = medication_string
-
-        form.diseases.append_entry(d_form)
-        form.medications.append_entry(m_form)
-
     if form.validate_on_submit():
+        print('checking')
+
+        print(form.diseases)
+
+        # for d in form.diseases:
+        #     print(d.disease)
+
         current_id = request.cookies.get("curr")
         transcription_id = str(uuid.uuid4())
         row_info = list()
@@ -169,5 +162,24 @@ def results(filename):
 
         return redirect(url_for('upload'))
 
-    return render_template('results.html', form=form,
+    else:
+        for i in range(len(result)):
+            d_form = DiseaseField()
+            m_form = MedicationField()
+            disease_string = u''
+            medication_string = u''
+
+            for d in result[i][1]['diseases']:
+                disease_string += d['name'].title() + u'\n'
+
+            for m in result[i][1]['medications']:
+                medication_string += m['name'].title() + u'\n'
+
+            d_form.disease = disease_string
+            m_form.medication = medication_string
+
+            form.diseases.append_entry(d_form)
+            form.medications.append_entry(m_form)
+
+        return render_template('results.html', form=form,
                            result=result, len=len(result))

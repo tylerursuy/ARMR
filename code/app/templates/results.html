@@ -37,9 +37,11 @@ Results
 			{{ '\t' + result[i][1]['text'] }}
 			<br/>
 			<p>
+			{{ form.diseases[i].csrf_token() }}
 			{{ wtf.form_field(form.diseases[i].disease, cols="20", rows="3") }}
 			<br/>
 			<p>
+			{{ form.medications[i].csrf_token() }}
 			{{ wtf.form_field(form.medications[i].medication, cols="20", rows="3") }}
 		</div>
 	</div>
@@ -47,5 +49,9 @@ Results
     <center> {{ wtf.form_field(form.submit)}} </center>
 </form>
 <br>
+
+{% if form.errors %}
+{{ form.errors }}
+{% endif %}
 
 {% endblock %}
