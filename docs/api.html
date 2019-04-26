@@ -16,7 +16,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Tutorial" href="tutorial.html" />
+    <link rel="prev" title="Tutorial for Deploying" href="tutorial.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -84,7 +84,7 @@
 
 <span class="target" id="module-app.classes"></span><dl class="class">
 <dt id="app.classes.Data">
-<em class="property">class </em><code class="descclassname">app.classes.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>physician_id</em>, <em>transcription_id</em>, <em>text</em>, <em>entity</em>, <em>start</em>, <em>end</em>, <em>label</em>, <em>subject_id</em>, <em>timestamp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/classes.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.classes.Data" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">app.classes.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>id</em>, <em>mrn</em>, <em>transcription_id</em>, <em>text</em>, <em>entity</em>, <em>start</em>, <em>end</em>, <em>label</em>, <em>subject_id</em>, <em>timestamp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/classes.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.classes.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schema for ‘transcriptions’ table in database.
 Functions to add observations.</p>
 <dl class="attribute">
@@ -98,6 +98,11 @@ Functions to add observations.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="app.classes.Data.id">
+<code class="descname">id</code><a class="headerlink" href="#app.classes.Data.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="app.classes.Data.index">
 <code class="descname">index</code><a class="headerlink" href="#app.classes.Data.index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -108,8 +113,8 @@ Functions to add observations.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="app.classes.Data.physician_id">
-<code class="descname">physician_id</code><a class="headerlink" href="#app.classes.Data.physician_id" title="Permalink to this definition">¶</a></dt>
+<dt id="app.classes.Data.mrn">
+<code class="descname">mrn</code><a class="headerlink" href="#app.classes.Data.mrn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -234,7 +239,7 @@ Functions to add observations.</p>
 
 <dl class="attribute">
 <dt id="app.forms.LogInForm.username">
-<code class="descname">username</code><em class="property"> = &lt;UnboundField(StringField, ('Username:',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.LogInForm.username" title="Permalink to this definition">¶</a></dt>
+<code class="descname">username</code><em class="property"> = &lt;UnboundField(StringField, ('Email:',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.LogInForm.username" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -271,7 +276,7 @@ Functions to add observations.</p>
 
 <dl class="attribute">
 <dt id="app.forms.RegistrationForm.username">
-<code class="descname">username</code><em class="property"> = &lt;UnboundField(StringField, ('Username (Email):',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.RegistrationForm.username" title="Permalink to this definition">¶</a></dt>
+<code class="descname">username</code><em class="property"> = &lt;UnboundField(StringField, ('Email (Username):',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.RegistrationForm.username" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -287,22 +292,12 @@ Functions to add observations.</p>
 
 <dl class="attribute">
 <dt id="app.forms.UploadFileForm.mrn">
-<code class="descname">mrn</code><em class="property"> = &lt;UnboundField(IntegerField, ('Medical Record Number (MRN)',), {'validators': [&lt;wtforms.validators.InputRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.UploadFileForm.mrn" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mrn</code><em class="property"> = &lt;UnboundField(IntegerField, ('MRN (Medical Record Number)',), {'validators': [&lt;wtforms.validators.InputRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.UploadFileForm.mrn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="app.forms.UploadFileForm.submit">
 <code class="descname">submit</code><em class="property"> = &lt;UnboundField(SubmitField, ('Submit',), {})&gt;</em><a class="headerlink" href="#app.forms.UploadFileForm.submit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="app.forms.UploadFileForm.validate_file_selector">
-<code class="descname">validate_file_selector</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#UploadFileForm.validate_file_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.forms.UploadFileForm.validate_file_selector" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="app.forms.UploadFileForm.validate_mrn">
-<code class="descname">validate_mrn</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#UploadFileForm.validate_mrn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.forms.UploadFileForm.validate_mrn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -324,6 +319,11 @@ Functions to add observations.</p>
 <code class="descclassname">app.nlp.</code><code class="descname">parse_entities</code><span class="sig-paren">(</span><em>model</em>, <em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/nlp.html#parse_entities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.nlp.parse_entities" title="Permalink to this definition">¶</a></dt>
 <dd><p>model identifies clinical text from transcribed text</p>
 </dd></dl>
+
+<dl class="function">
+<dt id="app.nlp.parse_medication">
+<code class="descclassname">app.nlp.</code><code class="descname">parse_medication</code><span class="sig-paren">(</span><em>span</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/nlp.html#parse_medication"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.nlp.parse_medication" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="app.nlp.prepare_note">
@@ -368,6 +368,11 @@ and medications</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="app.routes.unauthorized">
+<code class="descclassname">app.routes.</code><code class="descname">unauthorized</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#unauthorized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.unauthorized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="app.routes.upload">
 <code class="descclassname">app.routes.</code><code class="descname">upload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.upload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a file from a client machine.</p>
@@ -397,7 +402,8 @@ and medications</p>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial for Deploying</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#tutorial-for-using-armr">Tutorial for Using ARMR</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a></li>
 </ul>
 
@@ -405,7 +411,7 @@ and medications</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="tutorial.html" title="previous chapter">Tutorial</a></li>
+      <li>Previous: <a href="tutorial.html" title="previous chapter">Tutorial for Deploying</a></li>
   </ul></li>
 </ul>
 </div>

@@ -43,7 +43,7 @@
 
 <div class="viewcode-block" id="RegistrationForm"><a class="viewcode-back" href="../../api.html#app.forms.RegistrationForm">[docs]</a><span class="k">class</span> <span class="nc">RegistrationForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A FlaskForm to register a new user.&quot;&quot;&quot;</span>
-    <span class="n">username</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Username (Email):&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Email (Username):&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
     <span class="n">password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="s1">&#39;Password:&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
     <span class="n">password_confirmation</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="s1">&#39;Repeat Password:&#39;</span><span class="p">,</span>
                                           <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
@@ -52,27 +52,17 @@
 
 <div class="viewcode-block" id="LogInForm"><a class="viewcode-back" href="../../api.html#app.forms.LogInForm">[docs]</a><span class="k">class</span> <span class="nc">LogInForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A FlaskForm to log in an existing user.&quot;&quot;&quot;</span>
-    <span class="n">username</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Username:&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;Email:&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
     <span class="n">password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="s1">&#39;Password:&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
     <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UploadFileForm"><a class="viewcode-back" href="../../api.html#app.forms.UploadFileForm">[docs]</a><span class="k">class</span> <span class="nc">UploadFileForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for uploading file when submitted&quot;&quot;&quot;</span>
-    <span class="n">mrn</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;Medical Record Number (MRN)&#39;</span><span class="p">,</span>
+    <span class="n">mrn</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;MRN (Medical Record Number)&#39;</span><span class="p">,</span>
                        <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">InputRequired</span><span class="p">()])</span>
     <span class="n">file_selector</span> <span class="o">=</span> <span class="n">FileField</span><span class="p">(</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">FileRequired</span><span class="p">()])</span>
-    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s1">&#39;Submit&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="UploadFileForm.validate_mrn"><a class="viewcode-back" href="../../api.html#app.forms.UploadFileForm.validate_mrn">[docs]</a>    <span class="k">def</span> <span class="nf">validate_mrn</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">data</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">7</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;MRN must be 7 digits.&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="UploadFileForm.validate_file_selector"><a class="viewcode-back" href="../../api.html#app.forms.UploadFileForm.validate_file_selector">[docs]</a>    <span class="k">def</span> <span class="nf">validate_file_selector</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">secure_filename</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">filename</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">!=</span> <span class="s1">&#39;.wav&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;File type must be .wav&#39;</span><span class="p">)</span></div></div>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s1">&#39;Submit&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ModelResultsForm"><a class="viewcode-back" href="../../api.html#app.forms.ModelResultsForm">[docs]</a><span class="k">class</span> <span class="nc">ModelResultsForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
