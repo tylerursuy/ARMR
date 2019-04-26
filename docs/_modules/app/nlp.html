@@ -36,7 +36,7 @@
 <span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">spacy</span>
-<span class="kn">from</span> <span class="nn">spacy.matcher</span> <span class="k">import</span> <span class="n">PhraseMatcher</span>
+<span class="kn">from</span> <span class="nn">spacy.matcher</span> <span class="k">import</span> <span class="n">Matcher</span><span class="p">,</span> <span class="n">PhraseMatcher</span>
 <span class="kn">from</span> <span class="nn">spacy.util</span> <span class="k">import</span> <span class="n">minibatch</span><span class="p">,</span> <span class="n">compounding</span>
 
 <span class="n">TERMINOLOGY</span> <span class="o">=</span> <span class="p">[</span>
@@ -95,12 +95,59 @@
     <span class="sd">&quot;&quot;&quot;model identifies clinical text from transcribed text&quot;&quot;&quot;</span>
     <span class="n">diseases</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">medications</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">matcher</span> <span class="o">=</span> <span class="n">Matcher</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+
+    <span class="n">has_method_pattern</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;CHEMICAL&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;LIKE_NUM&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;mg&quot;</span><span class="p">},</span> <span class="p">{}]</span>
+    <span class="n">matcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;HasMethod&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">has_method_pattern</span><span class="p">)</span>
+
+    <span class="n">no_method_pattern</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;CHEMICAL&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;LIKE_NUM&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;LOWER&quot;</span><span class="p">:</span> <span class="s2">&quot;mg&quot;</span><span class="p">}]</span>
+    <span class="n">matcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;NoMethod&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">no_method_pattern</span><span class="p">)</span>
+
+    <span class="n">just_drug_pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;ENT_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;CHEMICAL&quot;</span><span class="p">}]</span>
+    <span class="n">matcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;JustDrug&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">just_drug_pattern</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">model</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">label_</span> <span class="o">==</span> <span class="s1">&#39;DISEASE&#39;</span><span class="p">:</span>
             <span class="n">diseases</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">entity</span><span class="p">)})</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">medications</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">entity</span><span class="p">)})</span>
+
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="n">matcher</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
+        <span class="n">last_start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">last_end</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">match_id</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">string_id</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">strings</span><span class="p">[</span><span class="n">match_id</span><span class="p">]</span>
+            <span class="n">span</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="o">!=</span> <span class="n">last_start</span> <span class="ow">and</span> <span class="n">last_start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">medication</span> <span class="o">=</span> <span class="n">parse_medication</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">last_start</span><span class="p">:</span><span class="n">last_end</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">medication</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+                    <span class="n">medications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">medication</span><span class="p">)</span>
+            <span class="n">last_start</span> <span class="o">=</span> <span class="n">start</span>
+            <span class="n">last_end</span> <span class="o">=</span> <span class="n">end</span>
+        <span class="n">medication</span> <span class="o">=</span> <span class="n">parse_medication</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">medication</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+            <span class="n">medications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parse_medication</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">diseases</span><span class="p">,</span> <span class="n">medications</span></div>
+
+
+<div class="viewcode-block" id="parse_medication"><a class="viewcode-back" href="../../api.html#app.nlp.parse_medication">[docs]</a><span class="k">def</span> <span class="nf">parse_medication</span><span class="p">(</span><span class="n">span</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">span</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">span</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="k">else</span> <span class="n">span</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">span</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">span</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="k">else</span> <span class="n">span</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="train"><a class="viewcode-back" href="../../api.html#app.nlp.train">[docs]</a><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
