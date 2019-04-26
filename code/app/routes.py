@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, \
 from flask_login import current_user, login_user, login_required, logout_user
 from app.classes import User, Data
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
-    ModelResultsForm
+    ModelResultsForm, DiseaseField, MedicationField
 from app.nlp import prepare_note
 from app import db, login_manager, spacy_model
 from datetime import timedelta, datetime
@@ -92,6 +92,7 @@ def upload():
     if file.validate_on_submit():
         f = file.file_selector.data
         filename = secure_filename(f.filename)
+
         mrn = file.mrn.data
 
         if filename[-4:] != '.wav':
@@ -135,28 +136,53 @@ def upload():
 @login_required
 def results(filename):
     example_result = session.get('example_result', None)
+    result = list(example_result.items())
     proper_title_keys = session.get('proper_title_keys', None)
     mrn = session.get('mrn', None)
+    
     form = ModelResultsForm()
+
     if form.validate_on_submit():
+
+        db_diseases = {}
+        db_meds = {}
+        for i in range(len(form.diseases)):
+            text_field = form.diseases[i].disease.data
+            split_d = [e.rstrip('\r').lower() for e in text_field.split('\n') if e != '']
+            db_diseases[result[i][0]] = split_d
+
+            text_field = form.medications[i].medication.data
+            split_d = [e.rstrip('\r').lower() for e in text_field.split('\n') if e != '']
+            db_meds[result[i][0]] = split_d
+
         current_id = request.cookies.get("curr")
         transcription_id = str(uuid.uuid4())
         row_info = list()
         tz = pytz.timezone("US/Pacific")
         timestamp = datetime.now(tz)
         for sub in proper_title_keys:
-            txt = example_result[sub.lower()]["text"]
-            for ent_d in example_result[sub.lower()]["diseases"]:
-                row_info.append((sub, txt, "disease", ent_d["name"]))
-            for ent_m in example_result[sub.lower()]["medications"]:
-                row_info.append((sub, txt, "medication", ent_m["name"]))
+            txt = example_result[sub.lower()]["text"].lower()
+
+            for ent_d in db_diseases[sub.lower()]:
+                row_info.append((sub, txt, "disease", ent_d))
+
+            for ent_m in db_meds[sub.lower()]:
+                row_info.append((sub, txt, "medication", ent_m))
+
         for t in range(len(row_info)):
             sub_id = row_info[t][0]
             txt = row_info[t][1]
             entity = row_info[t][3]
             label = row_info[t][2]
-            start = re.search(entity, txt).start()
-            end = re.search(entity, txt).end() - 1
+            
+            if entity in txt:
+                start = re.search(entity, txt).start()
+                end = re.search(entity, txt).end() - 1
+            else:
+                txt = entity
+                start = 0
+                end = len(entity) - 1
+
             upload_row = Data(id=current_id,
                               mrn=mrn,
                               transcription_id=transcription_id,
@@ -171,6 +197,28 @@ def results(filename):
         db.session.commit()
 
         return redirect(url_for('upload'))
+
+    else:
+        for i in range(len(result)):
+            d_form = DiseaseField()
+            m_form = MedicationField()
+            disease_string = ''
+            medication_string = ''
+
+            for d in result[i][1]['diseases']:
+                disease_string += d['name'].title() + u'\n'
+
+            for m in result[i][1]['medications']:
+                medication_string += m['name'].title() + u'\n'
+
+            d_form.disease = disease_string
+            m_form.medication = medication_string
+
+            form.diseases.append_entry(d_form)
+            form.medications.append_entry(m_form)
+
+        return render_template('results.html', form=form,
+                           result=result, len=len(result))
 
     return render_template('results.html', form=form, titles=proper_title_keys,
                            result=example_result)

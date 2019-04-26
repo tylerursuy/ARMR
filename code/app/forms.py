@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, \
-    SelectField, FileField, IntegerField
+    SelectField, FileField, IntegerField, TextAreaField, FieldList, FormField
 from wtforms.validators import DataRequired, InputRequired, ValidationError
 from flask_wtf.file import FileRequired
 from werkzeug import secure_filename
@@ -30,6 +30,19 @@ class UploadFileForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class DiseaseField(FlaskForm):
+    """form class with static fields for Disease"""
+    disease = TextAreaField()
+
+
+class MedicationField(FlaskForm):
+    """form class with static fields Medication"""
+    medication = TextAreaField()
+
+
 class ModelResultsForm(FlaskForm):
     """Class for uploading file when submitted"""
+    diseases = FieldList(FormField(DiseaseField))
+    medications = FieldList(FormField(MedicationField))
     submit = SubmitField('Submit')
+

@@ -12,9 +12,9 @@ Results
 {% block content %}
 <style>
 	.text_box {
-	  width: 90%;
+/*	  width: 60%;*/
       border-style: solid;
-      border-width: 3px;
+      border-width: 2px;
       margin-bottom: 10px;
       border-color: rgba(0,0,0);
       padding-left: 15px;
@@ -26,35 +26,31 @@ Results
 <br>
 <center><h1>Results</h1></center>
 
-{% for key, value in result.items() %}
-<div class="container">
-	<h2>{{ key.title() }}</h2>
-	<div class="text_box">
-		<h4>Transcription:</h4>
-		{{ '\t' + value['text'] }}
-
-		<h4>Diseases:</h4>
-		<ul>
-			{% for d in value['diseases'] %}
-				<li>{{ d['name'].title() }}</li>
-			{% endfor %}
-		</ul>
-
-		<h4>Medications:</h4>
-		<ul>
-			{% for d in value['medications'] %}
-				<li>{{ d['name'].title() }}</li>
-			{% endfor %}
-		</ul>
-	</div>
-</div>
-{% endfor %}
-
 <br>
  <form method="POST"> <!-- post : handle submission -->
-    {{ form.hidden_tag() }}    
+    {{ form.hidden_tag() }} 
+    {% for i in range(len) %}
+	<div class="container">
+		<h2>{{ result[i][0].title() }}</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result[i][1]['text'] }}
+			<br/>
+			<br/>
+			{{ form.diseases[i].csrf_token() }}
+			{{ wtf.form_field(form.diseases[i].disease, cols="20", rows="3") }}
+			<br/>
+			{{ form.medications[i].csrf_token() }}
+			{{ wtf.form_field(form.medications[i].medication, cols="20", rows="3") }}
+		</div>
+	</div>
+	{% endfor %}   
     <center> {{ wtf.form_field(form.submit)}} </center>
 </form>
 <br>
+
+{% if form.errors %}
+{{ form.errors }}
+{% endif %}
 
 {% endblock %}
