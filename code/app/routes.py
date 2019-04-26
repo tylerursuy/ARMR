@@ -115,7 +115,8 @@ def upload():
             example_result = prepare_note(spacy_model, talk_to_text)
 
             """Display the model results."""
-            proper_title_keys = [k.title() for k in list(example_result.keys())]
+            proper_title_keys = [
+                k.title() for k in list(example_result.keys())]
 
             session['example_result'] = example_result
             session['proper_title_keys'] = proper_title_keys
@@ -138,7 +139,7 @@ def results(filename):
     result = list(example_result.items())
     proper_title_keys = session.get('proper_title_keys', None)
     mrn = session.get('mrn', None)
-    
+
     form = ModelResultsForm()
 
     if form.validate_on_submit():
@@ -147,11 +148,15 @@ def results(filename):
         db_meds = {}
         for i in range(len(form.diseases)):
             text_field = form.diseases[i].disease.data
-            split_d = [e.rstrip('\r').lower() for e in text_field.split('\n') if e != '']
+            split_d = [
+                e.rstrip('\r').lower() for e in text_field.split('\n')
+                if e != '']
             db_diseases[result[i][0]] = split_d
 
             text_field = form.medications[i].medication.data
-            split_d = [e.rstrip('\r').lower() for e in text_field.split('\n') if e != '']
+            split_d = [
+                e.rstrip('\r').lower() for e in text_field.split('\n')
+                if e != '']
             db_meds[result[i][0]] = split_d
 
         current_id = request.cookies.get("curr")
@@ -173,7 +178,7 @@ def results(filename):
             txt = row_info[t][1]
             entity = row_info[t][3]
             label = row_info[t][2]
-            
+
             if entity in txt:
                 start = re.search(entity, txt).start()
                 end = re.search(entity, txt).end() - 1
@@ -208,7 +213,7 @@ def results(filename):
                 disease_string += d['name'].title() + '\n'
 
             for m in result[i][1]['medications']:
-                medication_string += m['name'].title() 
+                medication_string += m['name'].title()
                 if m['amount']:
                     medication_string += ' ' + m['amount']
                 if m['unit']:
@@ -224,11 +229,12 @@ def results(filename):
             form.diseases.append_entry(d_form)
             form.medications.append_entry(m_form)
 
-        return render_template('results.html', form=form,
-                           result=result, len=len(result))
+        return render_template(
+            'results.html', form=form, result=result, len=len(result))
 
     return render_template('results.html', form=form, titles=proper_title_keys,
                            result=example_result)
+
 
 @application.errorhandler(401)
 def unauthorized(e):
