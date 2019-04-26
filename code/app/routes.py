@@ -102,7 +102,6 @@ def upload():
         else:
             file_dir_path = os.path.join(application.instance_path, 'files')
             file_path = os.path.join(file_dir_path, filename)
-            # Save file to file_path (instance/ + 'files' + filename)
             f.save(file_path)
 
             # Convert audio file to text (String)
@@ -206,10 +205,18 @@ def results(filename):
             medication_string = ''
 
             for d in result[i][1]['diseases']:
-                disease_string += d['name'].title() + u'\n'
+                disease_string += d['name'].title() + '\n'
 
             for m in result[i][1]['medications']:
-                medication_string += m['name'].title() + u'\n'
+                medication_string += m['name'].title() 
+                if m['amount']:
+                    medication_string += ' ' + m['amount']
+                if m['unit']:
+                    medication_string += ' ' + m['unit']
+                if m['method']:
+                    medication_string += ' ' + m['method']
+
+                medication_string += '\n'
 
             d_form.disease = disease_string
             m_form.medication = medication_string
