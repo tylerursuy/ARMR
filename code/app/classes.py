@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from app import db, login_manager
 from flask_wtf.file import FileField, FileRequired
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 
 
@@ -89,6 +89,25 @@ class Data(db.Model):
         self.subject_id = subject_id
         self.timestamp = timestamp
 
+class Queue(db.Model):
+    """Schema for 'queue' table in database.
+    Functions to add observations."""
+    __tablename__ = "queue"
+    index = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(80), nullable=False)
+    mrn = db.Column(db.Integer, nullable=False)
+    # id for specific transcription
+    transcription_id = db.Column(db.String(80), nullable=False)
+    now_utc = pytz.utc.localize(datetime.utcnow())
+    timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+    filename = db.Column(db.String(80), nullable=False)
+
+    def __init__(self, id, mrn, transcription_id, timestamp, filename):
+        self.id = id
+        self.mrn = mrn
+        self.transcription_id = transcription_id
+        self.timestamp = timestamp
+        self.filename = filename
 
 @login_manager.user_loader
 def load_user(id):
