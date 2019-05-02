@@ -135,7 +135,10 @@ def upload():
 @login_required
 def results(filename):
     example_result = session.get('example_result', None)
-    result = list(example_result.items())
+    # result = list(example_result.items())
+    result = example_result
+    print(result)
+
     proper_title_keys = session.get('proper_title_keys', None)
     mrn = session.get('mrn', None)
 
@@ -203,31 +206,96 @@ def results(filename):
         return redirect(url_for('upload'))
 
     else:
-        for i in range(len(result)):
-            d_form = DiseaseField()
-            m_form = MedicationField()
-            disease_string = ''
-            medication_string = ''
+        # History of present illness
+        history_present_diseases = DiseaseField()
+        history_present_diseases_string = ''
+        for d in result['history of present illness']['diseases']:
+            history_present_diseases_string += d['name'].title() + '\n'
+        history_present_diseases.disease = history_present_diseases_string
+        form.history_present_diseases = history_present_diseases
 
-            for d in result[i][1]['diseases']:
-                disease_string += d['name'].title() + '\n'
+        # Past medical and surgical history
+        history_past_diseases = DiseaseField()
+        history_past_diseases_string = ''
+        for d in result['past medical and surgical history']['diseases']:
+            history_past_diseases_string += d['name'].title() + '\n'
+        history_past_diseases.disease = history_past_diseases_string
+        form.history_past_diseases = history_past_diseases
 
-            for m in result[i][1]['medications']:
-                medication_string += m['name'].title()
-                if m['amount']:
-                    medication_string += ' ' + m['amount']
-                if m['unit']:
-                    medication_string += ' ' + m['unit']
-                if m['method']:
-                    medication_string += ' ' + m['method']
+        # Medications
+        medications = MedicationField()
+        medications_string = ''
+        for m in result['medications']['medications']:
+            medications_string += m['name'].title()
+            if m['amount']:
+                medications_string += ' ' + m['amount']
+            if m['unit']:
+                medications_string += ' ' + m['unit']
+            if m['method']:
+                medications_string += ' ' + m['method']
 
-                medication_string += '\n'
+            medications_string += '\n'
+        medications.medication = medications_string
+        form.medications = medications
 
-            d_form.disease = disease_string
-            m_form.medication = medication_string
+        # Allergy medications
+        allergy_medications = MedicationField()
+        allergy_medications_string = ''
+        for m in result['allergies']['medications']:
+            allergy_medications_string += m['name'].title()
+            if m['amount']:
+                allergy_medications_string += ' ' + m['amount']
+            if m['unit']:
+                allergy_medications_string += ' ' + m['unit']
+            if m['method']:
+                allergy_medications_string += ' ' + m['method']
 
-            form.diseases.append_entry(d_form)
-            form.medications.append_entry(m_form)
+            allergy_medications_string += '\n'
+        allergy_medications.medication = allergy_medications_string
+        form.allergy_medications = allergy_medications
+
+        # Social history
+        history_social_diseases = DiseaseField()
+        history_social_diseases_string = ''
+        for d in result['social history']['diseases']:
+            history_social_diseases_string += d['name'].title() + '\n'
+        history_social_diseases.disease = history_social_diseases_string
+        form.history_social_diseases = history_social_diseases
+
+        # Impression/Assessment
+        assessment_diseases = DiseaseField()
+        assessment_diseases_string = ''
+        for d in result['impression']['diseases']:
+            assessment_diseases_string += d['name'].title() + '\n'
+        assessment_diseases.disease = assessment_diseases_string
+        form.assessment_diseases = assessment_diseases
+
+
+        # for i in range(len(result)):
+        #     d_form = DiseaseField()
+        #     m_form = MedicationField()
+        #     disease_string = ''
+        #     medication_string = ''
+
+        #     for d in result[i][1]['diseases']:
+        #         disease_string += d['name'].title() + '\n'
+
+        #     for m in result[i][1]['medications']:
+        #         medication_string += m['name'].title()
+        #         if m['amount']:
+        #             medication_string += ' ' + m['amount']
+        #         if m['unit']:
+        #             medication_string += ' ' + m['unit']
+        #         if m['method']:
+        #             medication_string += ' ' + m['method']
+
+        #         medication_string += '\n'
+
+        #     d_form.disease = disease_string
+        #     m_form.medication = medication_string
+
+        #     form.diseases.append_entry(d_form)
+        #     form.medications.append_entry(m_form)
 
         return render_template(
             'results.html', form=form, result=result, len=len(result))
