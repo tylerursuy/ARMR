@@ -2,7 +2,7 @@ from app import application, db
 from flask import render_template, redirect, url_for, \
     flash, request, session, g
 from flask_login import current_user, login_user, login_required, logout_user
-from app.classes import User, Data
+from app.classes import User, Data, Queue
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
     ModelResultsForm, DiseaseField, MedicationField
 from app.nlp import prepare_note
@@ -15,6 +15,7 @@ import os
 import uuid
 import re
 import pytz
+import json
 
 
 @application.route('/', methods=('GET', 'POST'))
@@ -31,7 +32,7 @@ def index():
         # Login and validate the user.
         if user is not None and user.check_password(password):
             login_user(user)
-            return redirect(url_for('upload'))
+            return redirect(url_for('upload', user=current_user.username))
         else:
             flash('Invalid username and password combination')
 
@@ -81,9 +82,9 @@ def logout():
     return redirect(url_for('index'))
 
 
-@application.route('/upload', methods=['GET', 'POST'])
+@application.route('/upload/<user>', methods=['GET', 'POST'])
 @login_required
-def upload():
+def upload(user):
     """Upload a file from a client machine."""
     file = UploadFileForm()
     if file.validate_on_submit():
@@ -101,46 +102,42 @@ def upload():
             file_path = os.path.join(file_dir_path, filename)
             f.save(file_path)
 
-            # Convert audio file to text (String)
-            r = sr.Recognizer()
-            harvard = sr.AudioFile(file_path)
-            with harvard as source:
-                audio = r.record(source)
-            talk_to_text = r.recognize_google(audio)
+            # Add this to the queue table
+            current_id = User.query.filter_by(username=user).first().id
+            transcription_id = str(uuid.uuid4())
+            now_utc = pytz.utc.localize(datetime.utcnow())
+            timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+            upload_row = Queue(id=current_id,
+                               mrn=mrn,
+                               transcription_id=transcription_id,
+                               timestamp=timestamp,
+                               filename=filename)
+            db.session.add(upload_row)
+            db.session.commit()
 
-            # pipe results from talk to text to nlp model
-            example_result = prepare_note(spacy_model, talk_to_text)
-
-            """Display the model results."""
-            proper_title_keys = [
-                k.title() for k in list(example_result.keys())]
-
-            mrn = int(mrn)
-            
-            session['example_result'] = example_result
-            session['proper_title_keys'] = proper_title_keys
-            session['mrn'] = mrn
-
-            # delete the file
-            if os.path.exists(file_path):
-                os.remove(file_path)
-            else:
-                print("The file does not exist.")
-
-            return redirect(url_for('results', filename=filename))
+            return redirect(url_for('queue', user=user))
     return render_template('upload.html', form=file)
 
 
-@application.route('/results/<filename>', methods=['GET', 'POST'])
+@application.route('/queue/<user>', methods=['GET', 'POST'])
 @login_required
-def results(filename):
-    example_result = session.get('example_result', None)
+def queue(user):
+    current_id = User.query.filter_by(username=user).first().id
+    uploads = Queue.query.filter_by(id=current_id).order_by(Queue.timestamp.desc()).all()
+    return render_template('recent_uploads.html', uploads=uploads)
+
+
+@application.route('/results/<user>/<transcription>', methods=['GET', 'POST'])
+@login_required
+def results(user, transcription):
+    queue_row = Queue.query.filter_by(transcription_id=transcription).first()
+    mrn = queue_row.mrn
+    example_result = json.loads(queue_row.content)
     result = list(example_result.items())
-    proper_title_keys = session.get('proper_title_keys', None)
-    mrn = session.get('mrn', None)
+    proper_title_keys = [
+                k.title() for k in list(example_result.keys())]
 
     form = ModelResultsForm()
-
     if form.validate_on_submit():
 
         db_diseases = {}
@@ -158,12 +155,10 @@ def results(filename):
                 if e != '']
             db_meds[result[i][0]] = split_d
 
-        user = User.query.filter_by(username=current_user.username).first()
-        current_id = user.id
-        transcription_id = str(uuid.uuid4())
+        current_id = User.query.filter_by(username=user).first().id
         row_info = list()
-        tz = pytz.timezone("US/Pacific")
-        timestamp = datetime.now(tz)
+        now_utc = pytz.utc.localize(datetime.utcnow())
+        timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
         for sub in proper_title_keys:
             txt = example_result[sub.lower()]["text"].lower()
 
@@ -189,7 +184,7 @@ def results(filename):
 
             upload_row = Data(id=current_id,
                               mrn=mrn,
-                              transcription_id=transcription_id,
+                              transcription_id=transcription,
                               text=txt,
                               entity=entity,
                               start=start,
@@ -198,9 +193,20 @@ def results(filename):
                               subject_id=sub_id,
                               timestamp=timestamp)
             db.session.add(upload_row)
+
+        # Delete the row from the Queue Table
+        Queue.query.filter_by(transcription_id=transcription).delete()
+
         db.session.commit()
 
-        return redirect(url_for('upload'))
+        # if the query table not empty for this user, then re-direct to the queue
+        # otherwise redirect to upload
+        current_id = User.query.filter_by(username=user).first().id
+        uploads = Queue.query.filter_by(id=current_id).first()
+        if uploads:
+            return redirect(url_for('queue', user=user))
+        else:
+            return redirect(url_for('upload', user=user))
 
     else:
         for i in range(len(result)):

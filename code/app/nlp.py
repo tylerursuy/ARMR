@@ -1,8 +1,13 @@
+from app import application, db, scheduler, spacy_model
+from app.classes import User, Data, Queue
+import json
 from pathlib import Path
+import os
 import random
 import spacy
 from spacy.matcher import Matcher, PhraseMatcher
 from spacy.util import minibatch, compounding
+import speech_recognition as sr
 
 TERMINOLOGY = [
         "history of present illness", "past medical and surgical history",
@@ -139,3 +144,30 @@ def train(model, train_data, output_dir, n_iter=100):
             output_dir.mkdir()
         model.to_disk(output_dir)
         print("Saved model to ", output_dir)
+
+
+def transcribe(filepath):
+    r = sr.Recognizer()
+    recording = sr.AudioFile(filepath)
+    with recording as source:
+        audio = r.record(source)
+    talk_to_text = r.recognize_google(audio)
+    return talk_to_text
+
+
+@scheduler.task('interval', id='pipeline', seconds=10)
+def process_transcription():
+    upload = Queue.query.filter_by(content=None).order_by(
+        Queue.timestamp.asc()).first()
+    if upload and not upload.content:
+        filename = upload.filename
+        file_dir_path = os.path.join(application.instance_path, 'files')
+        file_path = os.path.join(file_dir_path, filename)
+        if os.path.exists(file_path):
+            talk_to_text = transcribe(file_path)
+            os.remove(file_path)
+            result = prepare_note(spacy_model, talk_to_text)
+            upload.content = json.dumps(result)
+            db.session.commit()
+        else:
+            print('file_does_not_exsist')
