@@ -24,7 +24,7 @@ class LogInForm(FlaskForm):
 
 class UploadFileForm(FlaskForm):
     """Class for uploading file when submitted"""
-    mrn = IntegerField('MRN (Medical Record Number)',
+    mrn = StringField('MRN (Medical Record Number)',
                        validators=[InputRequired()])
     file_selector = FileField('File', validators=[FileRequired()])
     submit = SubmitField('Submit')
