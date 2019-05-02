@@ -126,12 +126,11 @@ def upload(user):
             #     print("The file does not exist.")
 
             # Add this to the queue table
-            #user = User.query.filter_by(username=current_user.username).first()
-            # current_id = user.id
+            current_id = User.query.filter_by(username=user).first().id
             transcription_id = str(uuid.uuid4())
             now_utc = pytz.utc.localize(datetime.utcnow())
             timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
-            upload_row = Queue(id=id,
+            upload_row = Queue(id=current_id,
                                mrn=mrn,
                                transcription_id=transcription_id,
                                timestamp=timestamp,
@@ -139,15 +138,14 @@ def upload(user):
             db.session.add(upload_row)
             db.session.commit()
 
-            return redirect(url_for('recent_uploads'))
+            return redirect(url_for('queue', user=user))
     return render_template('upload.html', form=file)
 
 
-@application.route('/queue', methods=['GET', 'POST'])
+@application.route('/queue/<user>', methods=['GET', 'POST'])
 @login_required
-def recent_uploads():
-    user = User.query.filter_by(username=current_user.username).first()
-    current_id = user.id
+def queue(user):
+    current_id = User.query.filter_by(username=user).first().id
     uploads = Queue.query.filter_by(id=current_id).order_by(Queue.timestamp.desc()).all()
     return render_template('recent_uploads.html', uploads=uploads)
 
