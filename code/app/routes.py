@@ -27,12 +27,11 @@ def index():
         password = login_form.password.data
         # Look for it in the database.
         user = User.query.filter_by(username=username).first()
+
         # Login and validate the user.
         if user is not None and user.check_password(password):
             login_user(user)
-            response = redirect(url_for('upload'))
-            response.set_cookie("curr", user.id)
-            return response
+            return redirect(url_for('upload'))
         else:
             flash('Invalid username and password combination')
 
@@ -65,9 +64,7 @@ def register():
             flash('Error - passwords do not match')
 
         else:
-            ph_id = str(uuid.uuid4())
-            user = User(ph_id=ph_id,
-                        username=username,
+            user = User(username=username,
                         password=password)
             db.session.add(user)
             db.session.commit()
@@ -180,7 +177,8 @@ def results(filename):
                 if e != '']
             db_meds[result[i][0]] = split_d
 
-        current_id = request.cookies.get("curr")
+        user = User.query.filter_by(username=current_user.username).first()
+        current_id = user.id
         transcription_id = str(uuid.uuid4())
         row_info = list()
         tz = pytz.timezone("US/Pacific")
