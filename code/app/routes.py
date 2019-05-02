@@ -199,7 +199,14 @@ def results(user, transcription):
 
         db.session.commit()
 
-        return redirect(url_for('upload', user=user))
+        # if the query table not empty for this user, then re-direct to the queue
+        # otherwise redirect to upload
+        current_id = User.query.filter_by(username=user).first().id
+        uploads = Queue.query.filter_by(id=current_id).first()
+        if uploads:
+            return redirect(url_for('queue', user=user))
+        else:
+            return redirect(url_for('upload', user=user))
 
     else:
         for i in range(len(result)):
