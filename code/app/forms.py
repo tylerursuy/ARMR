@@ -42,6 +42,13 @@ class MedicationField(FlaskForm):
 
 class ModelResultsForm(FlaskForm):
     """Class for uploading file when submitted"""
-    diseases = FieldList(FormField(DiseaseField))
-    medications = FieldList(FormField(MedicationField))
+    history_present_diseases = FormField(DiseaseField)
+    history_past_diseases = FormField(DiseaseField)
+    history_social_diseases = FormField(DiseaseField)
+    assessment_diseases = FormField(DiseaseField)
+
+    medications = FormField(MedicationField)
+    allergy_medications = FormField(MedicationField)
+
     submit = SubmitField('Submit')
+
