@@ -116,26 +116,98 @@ def parse_medication(span):
 
 
 def train(model, train_data, output_dir, n_iter=100):
-    """Named Entity Recognition Training loop"""
-    other_pipes = [pipe for pipe in model.pipe_names if pipe != "ner"]
-    with model.disable_pipes(*other_pipes):
+    if model is not None:
+        nlp = spacy.load(model)  # load existing spaCy model
+        print("Loaded model '%s'" % model)
+    else:
+        nlp = spacy.blank("en")  # create blank Language class
+        print("Created blank 'en' model")
+
+    # for text, _ in train_data:
+    #     doc = nlp(text)
+    #     print("Entities", [(ent.text, ent.label_) for ent in doc.ents])
+
+    # create the built-in pipeline components and add them to the pipeline
+    # nlp.create_pipe works for built-ins that are registered with spaCy
+    if "ner" not in nlp.pipe_names:
+        ner = nlp.create_pipe("ner")
+        nlp.add_pipe(ner, last=True)
+    # otherwise, get it so we can add labels
+    else:
+        ner = nlp.get_pipe("ner")
+
+    # add labels
+    for _, annotations in train_data:
+        for ent in annotations.get("entities"):
+            ner.add_label(ent[2])
+
+    # get names of other pipes to disable them during training
+    other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
+    with nlp.disable_pipes(*other_pipes):  # only train NER
+        # reset and initialize the weights randomly – but only if we're
+        # training a new model
+        if model is None:
+            nlp.begin_training()
         for itn in range(n_iter):
             random.shuffle(train_data)
             losses = {}
+            # batch up the examples using spaCy's minibatch
             batches = minibatch(train_data, size=compounding(4.0, 32.0, 1.001))
             for batch in batches:
                 texts, annotations = zip(*batch)
-                model.update(
-                    texts,
-                    annotations,
-                    drop=0.5,
+                nlp.update(
+                    texts,  # batch of texts
+                    annotations,  # batch of annotations
+                    drop=0.5,  # dropout - make it harder to memorise data
                     losses=losses,
                 )
             print("Losses", losses)
 
-    if output_dir is not None:
-        output_dir = Path(output_dir)
-        if not output_dir.exists():
-            output_dir.mkdir()
-        model.to_disk(output_dir)
-        print("Saved model to ", output_dir)
+    for text, _ in train_data[0:5]:
+        doc = nlp(text)
+        print("Entities", [(ent.text, ent.label_) for ent in doc.ents])
+
+    # if output_dir is not None:
+    #     output_dir = Path(output_dir)
+    #     if not output_dir.exists():
+    #         output_dir.mkdir()
+    #     nlp.to_disk(output_dir)
+    #     print("Saved model to ", output_dir)
+
+
+    # return nlp
+    # """Named Entity Recognition Training loop"""
+    # test_string = "the patient is a 52 year old female and has a previous history of aortic valve disease and a status " \
+    #               "post aortic valve replacement on october 15th 2007 for when she has been on chronic anticoagulation."
+    # doc = model(test_string)
+    # for ent in doc.ents:
+    #     print((ent.text, ent.label_))
+    #
+    # other_pipes = [pipe for pipe in model.pipe_names if pipe != "ner"]
+    #
+    # with model.disable_pipes(*other_pipes):
+    #     for itn in range(n_iter):
+    #         random.shuffle(train_data)
+    #         losses = {}
+    #         batches = minibatch(train_data, size=compounding(4.0, 32.0, 1.001))
+    #         for batch in batches:
+    #             texts, annotations = zip(*batch)
+    #             model.update(
+    #                 texts,
+    #                 annotations,
+    #                 drop=0.5,
+    #                 losses=losses,
+    #             )
+    #         print("Losses", losses)
+    #
+    #
+    # doc = model(test_string)
+    # for ent in doc.ents:
+    #     print((ent.text, ent.label_))
+    # return model
+    # if output_dir is not None:
+    #     output_dir = Path(output_dir)
+    #     if not output_dir.exists():
+    #         output_dir.mkdir()
+    #     model.to_disk(output_dir)
+    #     print("Saved model to ", output_dir)

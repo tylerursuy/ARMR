@@ -160,8 +160,8 @@ def results(filename):
         current_id = user.id
         transcription_id = str(uuid.uuid4())
         row_info = list()
-        tz = pytz.timezone("US/Pacific")
-        timestamp = datetime.now(tz)
+        now_utc = pytz.utc.localize(datetime.utcnow())
+        now_pst = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
         for sub in proper_title_keys:
             txt = example_result[sub.lower()]["text"].lower()
 
@@ -179,11 +179,11 @@ def results(filename):
 
             if entity in txt:
                 start = re.search(entity, txt).start()
-                end = re.search(entity, txt).end() - 1
+                end = re.search(entity, txt).end()
             else:
                 txt = entity
                 start = 0
-                end = len(entity) - 1
+                end = len(entity)
 
             upload_row = Data(id=current_id,
                               mrn=mrn,
@@ -194,7 +194,7 @@ def results(filename):
                               end=end,
                               label=label,
                               subject_id=sub_id,
-                              timestamp=timestamp)
+                              timestamp=now_pst)
             db.session.add(upload_row)
         db.session.commit()
 

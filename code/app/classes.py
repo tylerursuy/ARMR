@@ -64,8 +64,7 @@ class Data(db.Model):
     label = db.Column(db.String(100), nullable=True)
     # reason for visit, diagnosis, etc
     subject_id = db.Column(db.String(200), nullable=False)
-    tz = pytz.timezone("US/Pacific")
-    timestamp = db.Column(db.DateTime, default=datetime.now(tz))
+    timestamp = db.Column(db.DateTime)
 
     def __init__(self, id, mrn, transcription_id, text, entity,
                  start, end, label, subject_id, timestamp):
@@ -88,6 +87,19 @@ class Data(db.Model):
         # prescription, etc)
         self.subject_id = subject_id
         self.timestamp = timestamp
+
+    def __repr__(self):
+        info = (self.id, self.mrn, self.transcription_id, self.text,
+                self.entity, self.start, self.end, self.label,
+                self.subject_id, self.timestamp)
+        row = ""
+        m = len(info) - 1
+        for r in range(len(info)):
+            if r != m:
+                row += str(info[r]) + "/col/"
+            else:
+                row += str(info[r])
+        return row
 
 
 @login_manager.user_loader
