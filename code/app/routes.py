@@ -31,7 +31,7 @@ def index():
         # Login and validate the user.
         if user is not None and user.check_password(password):
             login_user(user)
-            return redirect(url_for('upload'))
+            return redirect(url_for('upload', user=current_user.username))
         else:
             flash('Invalid username and password combination')
 
@@ -81,9 +81,9 @@ def logout():
     return redirect(url_for('index'))
 
 
-@application.route('/upload', methods=['GET', 'POST'])
+@application.route('/upload/<user>', methods=['GET', 'POST'])
 @login_required
-def upload():
+def upload(user):
     """Upload a file from a client machine."""
     file = UploadFileForm()
     if file.validate_on_submit():
@@ -126,12 +126,12 @@ def upload():
             #     print("The file does not exist.")
 
             # Add this to the queue table
-            user = User.query.filter_by(username=current_user.username).first()
-            current_id = user.id
+            #user = User.query.filter_by(username=current_user.username).first()
+            # current_id = user.id
             transcription_id = str(uuid.uuid4())
             now_utc = pytz.utc.localize(datetime.utcnow())
             timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
-            upload_row = Queue(id=current_id,
+            upload_row = Queue(id=id,
                                mrn=mrn,
                                transcription_id=transcription_id,
                                timestamp=timestamp,
@@ -156,6 +156,7 @@ def recent_uploads():
 @login_required
 def results(filename):
     example_result = session.get('example_result', None)
+
     result = list(example_result.items())
     proper_title_keys = session.get('proper_title_keys', None)
     mrn = session.get('mrn', None)
@@ -221,7 +222,7 @@ def results(filename):
             db.session.add(upload_row)
         db.session.commit()
 
-        return redirect(url_for('upload'))
+        return redirect(url_for('upload', user=current_user.username))
 
     else:
         for i in range(len(result)):
