@@ -89,6 +89,7 @@ class Data(db.Model):
         self.subject_id = subject_id
         self.timestamp = timestamp
 
+
 class Queue(db.Model):
     """Schema for 'queue' table in database.
     Functions to add observations."""
@@ -102,6 +103,7 @@ class Queue(db.Model):
     timestamp_now = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
     timestamp = db.Column(db.DateTime, default=timestamp_now)
     filename = db.Column(db.String(80), nullable=False)
+    content = db.Column(db.Text, nullable=True)
 
     def __init__(self, id, mrn, transcription_id, timestamp, filename):
         self.id = id
@@ -109,6 +111,7 @@ class Queue(db.Model):
         self.transcription_id = transcription_id
         self.timestamp = timestamp
         self.filename = filename
+
 
 @login_manager.user_loader
 def load_user(id):
