@@ -94,8 +94,8 @@ def upload():
 
         if filename[-4:] != '.wav':
             flash('File type must be .wav')
-        elif len(str(mrn)) != 7:
-            flash('MRN must be 7 digits')
+        elif len(mrn) != 7 or not mrn.isnumeric():
+            flash('MRN must be a 7 digit number')
         else:
             file_dir_path = os.path.join(application.instance_path, 'files')
             file_path = os.path.join(file_dir_path, filename)
@@ -115,6 +115,8 @@ def upload():
             proper_title_keys = [
                 k.title() for k in list(example_result.keys())]
 
+            mrn = int(mrn)
+            
             session['example_result'] = example_result
             session['proper_title_keys'] = proper_title_keys
             session['mrn'] = mrn
