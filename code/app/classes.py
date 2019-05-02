@@ -11,12 +11,12 @@ class User(db.Model, UserMixin):
     """Schema for 'users' table in database.
     Functions to add observations."""
     __tablename__ = "users"
-    id = db.Column(db.String(80), primary_key=True)
+    id = db.Column(db.Integer, db.Sequence('id'), primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(120), nullable=False)
 
-    def __init__(self, ph_id, username, password):
-        self.id = ph_id
+    def __init__(self, username, password):
+        # self.id = ph_id
         self.username = username
         self.set_password(password)
 
@@ -53,7 +53,7 @@ class Data(db.Model):
     Functions to add observations."""
     __tablename__ = "transcriptions"
     index = db.Column(db.Integer, primary_key=True)
-    id = db.Column(db.String(80), nullable=False)
+    id = db.Column(db.Integer, nullable=False)
     mrn = db.Column(db.Integer, nullable=False)
     # id for specific transcription
     transcription_id = db.Column(db.String(80), nullable=False)
