@@ -94,8 +94,8 @@ def upload():
 
         if filename[-4:] != '.wav':
             flash('File type must be .wav')
-        elif len(str(mrn)) != 7:
-            flash('MRN must be 7 digits')
+        elif len(str(mrn)) != 7 or not str(mrn).isnumeric():
+            flash('MRN must be a 7 digit number')
         else:
             file_dir_path = os.path.join(application.instance_path, 'files')
             file_path = os.path.join(file_dir_path, filename)
