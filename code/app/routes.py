@@ -164,11 +164,18 @@ def results(filename):
         db_diseases['past medical and surgical history'] = history_past_split
 
         # Medications
-        history_past_text_field = form.history_present_diseases.disease.data
-        history_past_split = [
-            e.rstrip('\r').lower() for e in history_past_text_field.split('\n')
+        medications_text_field = form.medications.disease.data
+        medications_split = [
+            e.rstrip('\r').lower() for e in medications_text_field.split('\n')
             if e != '']
-        db_diseases['past medical and surgical history'] = history_past_split
+        db_meds['medications'] = medications_split
+
+        # Medications
+        allergy_medications_text_field = form.allergy_medications.disease.data
+        allergy_medications_split = [
+            e.rstrip('\r').lower() for e in allergy_medications_text_field.split('\n')
+            if e != '']
+        db_meds['allergies'] = allergy_medications_split
 
         # Social history
         history_social_text_field = form.history_social_diseases.disease.data
@@ -182,7 +189,7 @@ def results(filename):
         assessment_split = [
             e.rstrip('\r').lower() for e in assessment_text_field.split('\n')
             if e != '']
-        db_diseases['impression'] = assessment_split        
+        db_diseases['impression'] = assessment_split
 
         # for i in range(len(form.diseases)):
         #     text_field = form.diseases[i].disease.data
