@@ -115,9 +115,11 @@ def upload():
             proper_title_keys = [
                 k.title() for k in list(example_result.keys())]
 
+            mrn = int(mrn)
+            
             session['example_result'] = example_result
             session['proper_title_keys'] = proper_title_keys
-            session['mrn'] = int(mrn)
+            session['mrn'] = mrn
 
             # delete the file
             if os.path.exists(file_path):
