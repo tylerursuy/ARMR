@@ -94,7 +94,7 @@ def upload():
 
         if filename[-4:] != '.wav':
             flash('File type must be .wav')
-        elif len(str(mrn)) != 7 or not str(mrn).isnumeric():
+        elif len(mrn) != 7 or not mrn.isnumeric():
             flash('MRN must be a 7 digit number')
         else:
             file_dir_path = os.path.join(application.instance_path, 'files')
@@ -117,7 +117,7 @@ def upload():
 
             session['example_result'] = example_result
             session['proper_title_keys'] = proper_title_keys
-            session['mrn'] = mrn
+            session['mrn'] = int(mrn)
 
             # delete the file
             if os.path.exists(file_path):
