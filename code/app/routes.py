@@ -123,10 +123,10 @@ def upload():
             session['mrn'] = mrn
 
             # delete the file
-            if os.path.exists(file_path):
-                os.remove(file_path)
-            else:
-                print("The file does not exist.")
+            # if os.path.exists(file_path):
+            #     os.remove(file_path)
+            # else:
+            #     print("The file does not exist.")
 
             # Add this to the queue table
             current_id = request.cookies.get("curr")
