@@ -32,7 +32,7 @@ Upload Status
 		    <td>{{ row.mrn }}</td>
 		    <td>{{ row.timestamp }}</td>
 		    {% if row.content %}
-		    <td><a href="/results/{{ row.filename }}">Ready For Review</a></td>
+		    <td><a href="{{ url_for('results', user=current_user.username, transcription=row.transcription_id) }}">Ready For Review</a></td>
 		    {% else %}
 		    <td>Processing</td>
 		    {% endif %}
