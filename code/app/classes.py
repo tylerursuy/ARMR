@@ -16,7 +16,6 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(120), nullable=False)
 
     def __init__(self, username, password):
-        # self.id = ph_id
         self.username = username
         self.set_password(password)
 
@@ -55,17 +54,14 @@ class Data(db.Model):
     index = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.Integer, nullable=False)
     mrn = db.Column(db.Integer, nullable=False)
-    # id for specific transcription
     transcription_id = db.Column(db.String(80), nullable=False)
     text = db.Column(db.Text, nullable=False)
     entity = db.Column(db.Text, nullable=True)
     start = db.Column(db.Integer, nullable=True)
     end = db.Column(db.Integer, nullable=True)
     label = db.Column(db.String(100), nullable=True)
-    # reason for visit, diagnosis, etc
     subject_id = db.Column(db.String(200), nullable=False)
-    tz = pytz.timezone("US/Pacific")
-    timestamp = db.Column(db.DateTime, default=datetime.now(tz))
+    timestamp = db.Column(db.DateTime)
 
     def __init__(self, id, mrn, transcription_id, text, entity,
                  start, end, label, subject_id, timestamp):
@@ -95,22 +91,20 @@ class Queue(db.Model):
     Functions to add observations."""
     __tablename__ = "queue"
     index = db.Column(db.Integer, primary_key=True)
-    id = db.Column(db.String(80), nullable=False)
+    id = db.Column(db.Integer, nullable=False)
     mrn = db.Column(db.Integer, nullable=False)
-    # id for specific transcription
     transcription_id = db.Column(db.String(80), nullable=False)
-    now_utc = pytz.utc.localize(datetime.utcnow())
-    timestamp_now = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
-    timestamp = db.Column(db.DateTime, default=timestamp_now)
+    timestamp = db.Column(db.DateTime)
     filename = db.Column(db.String(80), nullable=False)
     content = db.Column(db.Text, nullable=True)
 
-    def __init__(self, id, mrn, transcription_id, timestamp, filename):
+    def __init__(self, id, mrn, transcription_id, timestamp, filename, content):
         self.id = id
         self.mrn = mrn
         self.transcription_id = transcription_id
         self.timestamp = timestamp
         self.filename = filename
+        self.content = content
 
 
 @login_manager.user_loader

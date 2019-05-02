@@ -158,7 +158,7 @@ def transcribe(filepath):
 @scheduler.task('interval', id='pipeline', seconds=10)
 def process_transcription():
     upload = Queue.query.filter_by(content=None).order_by(
-        Queue.timestamp.desc()).first()
+        Queue.timestamp.asc()).first()
     if upload and not upload.content:
         filename = upload.filename
         file_dir_path = os.path.join(application.instance_path, 'files')
