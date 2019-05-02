@@ -148,18 +148,54 @@ def results(filename):
 
         db_diseases = {}
         db_meds = {}
-        for i in range(len(form.diseases)):
-            text_field = form.diseases[i].disease.data
-            split_d = [
-                e.rstrip('\r').lower() for e in text_field.split('\n')
-                if e != '']
-            db_diseases[result[i][0]] = split_d
 
-            text_field = form.medications[i].medication.data
-            split_d = [
-                e.rstrip('\r').lower() for e in text_field.split('\n')
-                if e != '']
-            db_meds[result[i][0]] = split_d
+        # History of present illness
+        history_present_text_field = form.history_present_diseases.disease.data
+        history_present_split = [
+            e.rstrip('\r').lower() for e in history_present_text_field.split('\n')
+            if e != '']
+        db_diseases['history of present illness'] = history_present_split
+
+        # Past medical and surgical history
+        history_past_text_field = form.history_past_diseases.disease.data
+        history_past_split = [
+            e.rstrip('\r').lower() for e in history_past_text_field.split('\n')
+            if e != '']
+        db_diseases['past medical and surgical history'] = history_past_split
+
+        # Medications
+        history_past_text_field = form.history_present_diseases.disease.data
+        history_past_split = [
+            e.rstrip('\r').lower() for e in history_past_text_field.split('\n')
+            if e != '']
+        db_diseases['past medical and surgical history'] = history_past_split
+
+        # Social history
+        history_social_text_field = form.history_social_diseases.disease.data
+        history_social_split = [
+            e.rstrip('\r').lower() for e in history_social_text_field.split('\n')
+            if e != '']
+        db_diseases['social history'] = history_social_split
+
+        # Social history
+        assessment_text_field = form.assessment_diseases.disease.data
+        assessment_split = [
+            e.rstrip('\r').lower() for e in assessment_text_field.split('\n')
+            if e != '']
+        db_diseases['impression'] = assessment_split        
+
+        # for i in range(len(form.diseases)):
+        #     text_field = form.diseases[i].disease.data
+        #     split_d = [
+        #         e.rstrip('\r').lower() for e in text_field.split('\n')
+        #         if e != '']
+        #     db_diseases[result[i][0]] = split_d
+
+        #     text_field = form.medications[i].medication.data
+        #     split_d = [
+        #         e.rstrip('\r').lower() for e in text_field.split('\n')
+        #         if e != '']
+        #     db_meds[result[i][0]] = split_d
 
         user = User.query.filter_by(username=current_user.username).first()
         current_id = user.id
