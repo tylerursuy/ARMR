@@ -167,5 +167,8 @@ def process_transcription():
             talk_to_text = transcribe(file_path)
             os.remove(file_path)
             result = prepare_note(spacy_model, talk_to_text)
+            print(result)
             upload.content = json.dumps(result)
             db.session.commit()
+        else:
+            print('file_does_not_exsist')

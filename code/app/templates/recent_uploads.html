@@ -31,7 +31,11 @@ Upload Status
 		   	<td>{{ row.filename }}</td>
 		    <td>{{ row.mrn }}</td>
 		    <td>{{ row.timestamp }}</td>
-		    <td>Insert Link Here</td>
+		    {% if row.content %}
+		    <td><a href="/results/{{ row.filename }}">Ready For Review</a></td>
+		    {% else %}
+		    <td>Processing</td>
+		    {% endif %}
 		  </tr>
 		{% endfor %}
 	  </tbody>

@@ -98,13 +98,12 @@ class Queue(db.Model):
     filename = db.Column(db.String(80), nullable=False)
     content = db.Column(db.Text, nullable=True)
 
-    def __init__(self, id, mrn, transcription_id, timestamp, filename, content):
+    def __init__(self, id, mrn, transcription_id, timestamp, filename):
         self.id = id
         self.mrn = mrn
         self.transcription_id = transcription_id
         self.timestamp = timestamp
         self.filename = filename
-        self.content = content
 
 
 @login_manager.user_loader

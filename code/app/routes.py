@@ -101,23 +101,23 @@ def upload():
             file_path = os.path.join(file_dir_path, filename)
             f.save(file_path)
 
-            # Convert audio file to text (String)
-            r = sr.Recognizer()
-            harvard = sr.AudioFile(file_path)
-            with harvard as source:
-                audio = r.record(source)
-            talk_to_text = r.recognize_google(audio)
+            # # Convert audio file to text (String)
+            # r = sr.Recognizer()
+            # harvard = sr.AudioFile(file_path)
+            # with harvard as source:
+            #     audio = r.record(source)
+            # talk_to_text = r.recognize_google(audio)
 
-            # pipe results from talk to text to nlp model
-            example_result = prepare_note(spacy_model, talk_to_text)
+            # # pipe results from talk to text to nlp model
+            # example_result = prepare_note(spacy_model, talk_to_text)
 
-            """Display the model results."""
-            proper_title_keys = [
-                k.title() for k in list(example_result.keys())]
+            # """Display the model results."""
+            # proper_title_keys = [
+            #     k.title() for k in list(example_result.keys())]
 
-            session['example_result'] = example_result
-            session['proper_title_keys'] = proper_title_keys
-            session['mrn'] = mrn
+            # session['example_result'] = example_result
+            # session['proper_title_keys'] = proper_title_keys
+            # session['mrn'] = mrn
 
             # delete the file
             # if os.path.exists(file_path):
@@ -126,7 +126,8 @@ def upload():
             #     print("The file does not exist.")
 
             # Add this to the queue table
-            current_id = request.cookies.get("curr")
+            user = User.query.filter_by(username=current_user.username).first()
+            current_id = user.id
             transcription_id = str(uuid.uuid4())
             now_utc = pytz.utc.localize(datetime.utcnow())
             timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
@@ -138,14 +139,15 @@ def upload():
             db.session.add(upload_row)
             db.session.commit()
 
-            return redirect(url_for('results', filename=filename))
+            return redirect(url_for('recent_uploads'))
     return render_template('upload.html', form=file)
 
 
 @application.route('/queue', methods=['GET', 'POST'])
 @login_required
 def recent_uploads():
-    current_id = request.cookies.get("curr")
+    user = User.query.filter_by(username=current_user.username).first()
+    current_id = user.id
     uploads = Queue.query.filter_by(id=current_id).order_by(Queue.timestamp.desc()).all()
     return render_template('recent_uploads.html', uploads=uploads)
 
