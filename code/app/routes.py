@@ -2,7 +2,7 @@ from app import application, db
 from flask import render_template, redirect, url_for, \
     flash, request, session, g
 from flask_login import current_user, login_user, login_required, logout_user
-from app.classes import User, Data
+from app.classes import User, Data, Queue
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
     ModelResultsForm, DiseaseField, MedicationField
 from app.nlp import prepare_note
@@ -128,8 +128,29 @@ def upload():
             else:
                 print("The file does not exist.")
 
+            # Add this to the queue table
+            current_id = request.cookies.get("curr")
+            transcription_id = str(uuid.uuid4())
+            now_utc = pytz.utc.localize(datetime.utcnow())
+            timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+            upload_row = Queue(id=current_id,
+                               mrn=mrn,
+                               transcription_id=transcription_id,
+                               timestamp=timestamp,
+                               filename=filename)
+            db.session.add(upload_row)
+            db.session.commit()
+
             return redirect(url_for('results', filename=filename))
     return render_template('upload.html', form=file)
+
+
+@application.route('/queue', methods=['GET', 'POST'])
+@login_required
+def recent_uploads():
+    current_id = request.cookies.get("curr")
+    uploads = Queue.query.filter_by(id=current_id).order_by(Queue.timestamp.desc()).all()
+    return render_template('recent_uploads.html', uploads=uploads)
 
 
 @application.route('/results/<filename>', methods=['GET', 'POST'])

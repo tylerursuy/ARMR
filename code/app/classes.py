@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from app import db, login_manager
 from flask_wtf.file import FileField, FileRequired
-from datetime import datetime, timedelta
+from datetime import datetime
 import pytz
 
 
@@ -99,7 +99,8 @@ class Queue(db.Model):
     # id for specific transcription
     transcription_id = db.Column(db.String(80), nullable=False)
     now_utc = pytz.utc.localize(datetime.utcnow())
-    timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+    timestamp_now = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+    timestamp = db.Column(db.DateTime, default=timestamp_now)
     filename = db.Column(db.String(80), nullable=False)
 
     def __init__(self, id, mrn, transcription_id, timestamp, filename):

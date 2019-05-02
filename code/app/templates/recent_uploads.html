@@ -1,0 +1,39 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Upload Status
+{% endblock %}
+
+{% block navbar %}
+	{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<br/>
+<br/>
+<center><h2>Upload Status</h2></center>
+
+<div class="container">
+	<br/>
+	<table class="table table-hover">
+	  <thead class="thead-dark">
+	    <tr>
+	      <th scope="col">Filename</th>
+	      <th scope="col">MRN</th>
+	      <th scope="col">Timestamp</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    {% for row in uploads %}
+		  <tr>
+		   	<td>{{ row.filename }}</td>
+		    <td>{{ row.mrn }}</td>
+		    <td>{{ row.timestamp }}</td>
+		  </tr>
+		{% endfor %}
+	  </tbody>
+	</table>
+</div>
+
+{% endblock %}
