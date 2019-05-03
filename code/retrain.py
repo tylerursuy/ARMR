@@ -7,7 +7,9 @@ import os
 from app.nlp import train, load_model
 from datetime import datetime, timedelta
 import pytz
-import shutil
+import tarfile
+import boto3
+from app import spacy_model
 
 """
 Work Flow:
@@ -29,7 +31,7 @@ Notes:
 """
 
 
-def shut_down_app(ssh):
+def shut_down_app():
     """
     Shut down app currently running.
 
@@ -37,7 +39,7 @@ def shut_down_app(ssh):
     :return: None
     """
     screen_command = "screen -S test -X quit"
-    ssh.exec_command(screen_command)
+    os.system(screen_command)
 
 
 def get_dir():
@@ -48,9 +50,11 @@ def get_dir():
              Directory to save new weights later
     """
     par_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    model_dir = "{}/models/en_ner_bc5cdr_md-0.1.0".format(par_dir)
-    # model_weights = load_model(model_dir)
-    return model_dir
+    par_dir += "/models"
+    for root, dirs, files in os.walk(par_dir):
+        model_dir = "{}/{}".format(par_dir, dirs[0])
+        break
+    return model_dir, par_dir
 
 
 def get_data():
@@ -82,10 +86,12 @@ def format_data(training_data):
         label = row[7].upper()
         if label == "MEDICATION":
             label = "CHEMICAL"
-        if text not in text_dict.keys():
-            text_dict[text] = []
-        else:
-            text_dict[text].append((start, end, label))
+        if start + end > 0:
+            if text not in text_dict.keys():
+                text_dict[text] = []
+                text_dict[text].append((start, end, label))
+            else:
+                text_dict[text].append((start, end, label))
 
     formatted = list()
     for key, value in text_dict.items():
@@ -94,55 +100,60 @@ def format_data(training_data):
     return formatted
 
 
-def retrain(model_dir, training_data, n_iter=100):
+def retrain(model, training_data, output_dir, n_iter=100):
     """
     Retrain model on last week's data.
 
-    :param model_weights: Current model weights.
+    :param model: Current model weights.
     :param training_data: Training data from past week.
-    :param output_dir: Filepath to save weights.
     :param n_iter: Number of iterations to train.
     :return: None
     """
-    new = train(model=model_dir,
-                train_data=training_data,
-                output_dir=model_dir,
-                n_iter=n_iter)
-    return new
+    nlp, path = train(model=model,
+                      train_data=training_data,
+                      output_dir=output_dir,
+                      n_iter=n_iter)
+    return nlp, path
 
 
-def delete_old_save_new(model_dir, weights):
-    shutil.rmtree(model_dir)
-    weights.to_disk(model_dir)
+def to_zip(model_dir):
+    os.chdir(f"../models")
+    zip_file = f"{model_dir}.zip"
+    os.system(f"zip -r {zip_file} {str(model_dir).split('/')[-1]}/*")
+    print(f"Zipped to {model_dir}")
+    return zip_file
 
 
-def push_weights(weights):
+def push_weights(zip_file):
     """
     Why don't we take the new weights,
     and push them somewhere else?
 
-    :param weights: New model weights.
+    :param tar_file: New model weights tar file.
     :return: None
     """
+    s3 = boto3.client('s3')
+    bucket_name = 'msds-armr'
+
+    # Uploads the given file using a managed uploader, which will split up large
+    # files automatically and upload parts in parallel.
+    s3.upload_file(zip_file, bucket_name, zip_file)
+
+
+def redeploy():
+    os.system("bash flask.sh")
 
 
 def main():
-    # ssh = ssh_client()
-    # ssh_connection(ssh, ec2_address, user, key_file)
     raw_data = get_data()
     training_data = format_data(raw_data)
-    model_dir = get_dir()
-    retrain(model_dir, training_data, 5)
-    # print(model_dir)
-    # current_version = model_dir[97:].split(".")[1]
-    # full_path = model_dir[:97]
-    # new_version = "0." + str(int(current_version) + 1) + ".0"
-    # full_path += new_version
-    # print(full_path)
-    # delete_old_save_new(model_dir, new_weights)
-    # push weights
-    # kill application
-    # re-launch application (bash script)
+    model_dir, par_dir = get_dir()
+    nlp, path = retrain(model_dir, training_data, model_dir, 5)
+    zipped = to_zip(path)
+    to_s3 = str(zipped).split("/")[-1]
+    push_weights(to_s3)
+    shut_down_app()
+    redeploy()
 
 
 if __name__ == "__main__":

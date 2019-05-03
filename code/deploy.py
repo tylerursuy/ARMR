@@ -88,12 +88,13 @@ def deploy_model(ssh):
     stdin, stdout, stderr = ssh.exec_command("~/.conda/envs/armr/bin/aws \
             s3 ls msds-armr --recursive | sort | tail -n 1 | awk '{print $4}'")
     model = stdout.read().strip().decode("utf-8")
+
     stdin, stdout, stderr = ssh.exec_command(f"~/.conda/envs/armr/bin/aws \
-            s3 cp s3://{bucket_name}/{model} ~/en_ner_bc5cdr_md-0.1.0.zip")
+            s3 cp s3://{bucket_name}/{model} ~/{model}")
     time.sleep(20)
     stdin, stdout, stderr = \
-        ssh.exec_command("unzip ~/en_ner_bc5cdr_md-0.1.0.zip -d \
-        ~/{}/models/".format(git_repo_name))
+        ssh.exec_command("unzip ~/{} -d \
+        ~/{}/models/".format(model, git_repo_name))
     print(stdout.read())
 
 
