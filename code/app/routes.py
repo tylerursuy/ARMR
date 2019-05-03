@@ -137,7 +137,6 @@ def results(filename):
     example_result = session.get('example_result', None)
     # result = list(example_result.items())
     result = example_result
-    print(result)
 
     proper_title_keys = session.get('proper_title_keys', None)
     mrn = session.get('mrn', None)
@@ -150,59 +149,39 @@ def results(filename):
         db_meds = {}
 
         # History of present illness
-        history_present_text_field = form.history_present_diseases.disease.data
+        history_present_text_field = form.history_present_diseases.data
         history_present_split = [
             e.rstrip('\r').lower() for e in history_present_text_field.split('\n')
             if e != '']
         db_diseases['history of present illness'] = history_present_split
 
         # Past medical and surgical history
-        history_past_text_field = form.history_past_diseases.disease.data
+        history_past_text_field = form.history_past_diseases.data
         history_past_split = [
             e.rstrip('\r').lower() for e in history_past_text_field.split('\n')
             if e != '']
         db_diseases['past medical and surgical history'] = history_past_split
 
         # Medications
-        medications_text_field = form.medications.disease.data
+        medications_text_field = form.medications.data
         medications_split = [
             e.rstrip('\r').lower() for e in medications_text_field.split('\n')
             if e != '']
         db_meds['medications'] = medications_split
 
-        # Medications
-        allergy_medications_text_field = form.allergy_medications.disease.data
+        # Allergies
+        allergy_medications_text_field = form.allergy_medications.data
         allergy_medications_split = [
             e.rstrip('\r').lower() for e in allergy_medications_text_field.split('\n')
             if e != '']
         db_meds['allergies'] = allergy_medications_split
 
-        # Social history
-        history_social_text_field = form.history_social_diseases.disease.data
-        history_social_split = [
-            e.rstrip('\r').lower() for e in history_social_text_field.split('\n')
-            if e != '']
-        db_diseases['social history'] = history_social_split
-
-        # Social history
-        assessment_text_field = form.assessment_diseases.disease.data
+        # Assessment
+        assessment_text_field = form.assessment_diseases.data
         assessment_split = [
             e.rstrip('\r').lower() for e in assessment_text_field.split('\n')
             if e != '']
         db_diseases['impression'] = assessment_split
-
-        # for i in range(len(form.diseases)):
-        #     text_field = form.diseases[i].disease.data
-        #     split_d = [
-        #         e.rstrip('\r').lower() for e in text_field.split('\n')
-        #         if e != '']
-        #     db_diseases[result[i][0]] = split_d
-
-        #     text_field = form.medications[i].medication.data
-        #     split_d = [
-        #         e.rstrip('\r').lower() for e in text_field.split('\n')
-        #         if e != '']
-        #     db_meds[result[i][0]] = split_d
 
         user = User.query.filter_by(username=current_user.username).first()
         current_id = user.id
@@ -210,14 +189,31 @@ def results(filename):
         row_info = list()
         tz = pytz.timezone("US/Pacific")
         timestamp = datetime.now(tz)
-        for sub in proper_title_keys:
-            txt = example_result[sub.lower()]["text"].lower()
 
-            for ent_d in db_diseases[sub.lower()]:
-                row_info.append((sub, txt, "disease", ent_d))
+        for ent_d in db_diseases['history of present illness']:
+            row_info.append(('history of present illness',
+                example_result['history of present illness']['text'], 
+                'disease', ent_d))
 
-            for ent_m in db_meds[sub.lower()]:
-                row_info.append((sub, txt, "medication", ent_m))
+        for ent_d in db_diseases['past medical and surgical history']:
+            row_info.append(('past medical and surgical history',
+                example_result['past medical and surgical history']['text'], 
+                'disease', ent_d))
+
+        for ent_d in db_meds['medications']:
+            row_info.append(('medications',
+                example_result['medications prior to admission']['text'], 
+                'medication', ent_d))
+
+        for ent_d in db_meds['allergies']:
+            row_info.append(('allergies',
+                example_result['allergies']['text'], 
+                'medication', ent_d))
+
+        for ent_d in db_diseases['impression']:
+            row_info.append(('impression',
+                example_result['impression']['text'], 
+                'disease', ent_d))
 
         for t in range(len(row_info)):
             sub_id = row_info[t][0]
@@ -253,13 +249,13 @@ def results(filename):
         history_present_diseases_string = ''
         for d in result['history of present illness']['diseases']:
             history_present_diseases_string += d['name'].title() + '\n'
-        form.history_present_diseases = history_present_diseases_string
+        form.history_present_diseases.data = history_present_diseases_string
 
         # Past medical and surgical history
         history_past_diseases_string = ''
         for d in result['past medical and surgical history']['diseases']:
             history_past_diseases_string += d['name'].title() + '\n'
-        form.history_past_diseases = history_past_diseases_string
+        form.history_past_diseases.data = history_past_diseases_string
 
         # Medications
         medications_string = ''
@@ -273,7 +269,7 @@ def results(filename):
                 medications_string += ' ' + m['method']
 
             medications_string += '\n'
-        form.medications = medications_string
+        form.medications.data = medications_string
 
         # Allergy medications
         allergy_medications_string = ''
@@ -287,48 +283,21 @@ def results(filename):
                 allergy_medications_string += ' ' + m['method']
 
             allergy_medications_string += '\n'
-        form.allergy_medications = allergy_medications_string
+        form.allergy_medications.data = allergy_medications_string
 
         # Social history
         history_social_diseases_string = ''
         for d in result['social history']['diseases']:
             history_social_diseases_string += d['name'].title() + '\n'
 
-        form.history_social_diseases = history_social_diseases_string
+        form.history_social_diseases.data = history_social_diseases_string
 
         # Impression/Assessment
         assessment_diseases_string = ''
         for d in result['impression']['diseases']:
             assessment_diseases_string += d['name'].title() + '\n'
 
-        form.assessment_diseases = assessment_diseases_string
-
-
-        # for i in range(len(result)):
-        #     d_form = DiseaseField()
-        #     m_form = MedicationField()
-        #     disease_string = ''
-        #     medication_string = ''
-
-        #     for d in result[i][1]['diseases']:
-        #         disease_string += d['name'].title() + '\n'
-
-        #     for m in result[i][1]['medications']:
-        #         medication_string += m['name'].title()
-        #         if m['amount']:
-        #             medication_string += ' ' + m['amount']
-        #         if m['unit']:
-        #             medication_string += ' ' + m['unit']
-        #         if m['method']:
-        #             medication_string += ' ' + m['method']
-
-        #         medication_string += '\n'
-
-        #     d_form.disease = disease_string
-        #     m_form.medication = medication_string
-
-        #     form.diseases.append_entry(d_form)
-        #     form.medications.append_entry(m_form)
+        form.assessment_diseases.data = assessment_diseases_string
 
         return render_template(
             'results.html', form=form, result=result, len=len(result))

@@ -29,16 +29,6 @@ Results
 <br>
  <form method="POST"> <!-- post : handle submission -->
     {{ form.hidden_tag() }}
-
-    <!-- <div class="container">
-		<h2>Chief Complaint</h2>
-		<div class="text_box">
-			<br/>
-			'\t' + result['chief compaint']['text']
-			<br/>
-		</div>
-	</div> -->
-
 	<div class="container">
 		<h2>History</h2>
 		<div class="text_box">
@@ -65,7 +55,7 @@ Results
 		<h2>Medications</h2>
 		<div class="text_box">
 			<br/>
-			{{ '\t' + result['medications']['text'] }}
+			{{ '\t' + result['medications prior to admission']['text'] }}
 			<br/>
 			<br/>
 			{{ wtf.form_field(form.medications, cols="20", rows="3") }}
