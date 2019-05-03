@@ -13,7 +13,10 @@
       </li>
       {% if current_user.is_authenticated %}
       <li class="nav-item">
-          <a class="nav-link" href="/upload">Upload</a>
+          <a class="nav-link" href="{{ url_for('upload', user=current_user.username) }}">Upload</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('queue', user=current_user.username) }}">Status</a>
       </li>
       {% endif %}
     </ul>
