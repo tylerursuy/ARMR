@@ -23,8 +23,6 @@ def ssh_connection(ssh, ec2_address, user, key_file):
 def create_or_update_environment(ssh):
     """Generate or update an enviornment.yml file with all dependencies"""
     stdin, stdout, stderr = ssh.exec_command("sudo yum -y install gcc")
-    stdin, stdout, stderr = ssh.exec_command("git -C {} checkout \
-        spacy-functions".format(git_repo_name))
     stdin, stdout, stderr = \
         ssh.exec_command("conda env create -f "
                          "~/{}/environment.yml".format(git_repo_name))
