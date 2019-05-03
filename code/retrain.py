@@ -137,7 +137,7 @@ def push_weights(zip_file):
 
     # Uploads the given file using a managed uploader, which will split up large
     # files automatically and upload parts in parallel.
-    s3.upload_file(zip_file, bucket_name, zip_file)
+    s3.upload_file(zip_file, bucket_name, zip_file, ExtraArgs={'ACL': 'public-read'})
 
 
 def redeploy():
