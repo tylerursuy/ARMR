@@ -16,7 +16,6 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(120), nullable=False)
 
     def __init__(self, username, password):
-        # self.id = ph_id
         self.username = username
         self.set_password(password)
 
@@ -55,14 +54,12 @@ class Data(db.Model):
     index = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.Integer, nullable=False)
     mrn = db.Column(db.Integer, nullable=False)
-    # id for specific transcription
     transcription_id = db.Column(db.String(80), nullable=False)
     text = db.Column(db.Text, nullable=False)
     entity = db.Column(db.Text, nullable=True)
     start = db.Column(db.Integer, nullable=True)
     end = db.Column(db.Integer, nullable=True)
     label = db.Column(db.String(100), nullable=True)
-    # reason for visit, diagnosis, etc
     subject_id = db.Column(db.String(200), nullable=False)
     timestamp = db.Column(db.DateTime)
 
@@ -100,6 +97,26 @@ class Data(db.Model):
             else:
                 row += str(info[r])
         return row
+
+
+class Queue(db.Model):
+    """Schema for 'queue' table in database.
+    Functions to add observations."""
+    __tablename__ = "queue"
+    index = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, nullable=False)
+    mrn = db.Column(db.Integer, nullable=False)
+    transcription_id = db.Column(db.String(80), nullable=False)
+    timestamp = db.Column(db.DateTime)
+    filename = db.Column(db.String(80), nullable=False)
+    content = db.Column(db.Text, nullable=True)
+
+    def __init__(self, id, mrn, transcription_id, timestamp, filename):
+        self.id = id
+        self.mrn = mrn
+        self.transcription_id = transcription_id
+        self.timestamp = timestamp
+        self.filename = filename
 
 
 @login_manager.user_loader

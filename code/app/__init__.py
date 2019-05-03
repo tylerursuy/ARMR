@@ -7,7 +7,7 @@ from flask_login import LoginManager
 from flask_wtf import FlaskForm
 import spacy
 from spacy.matcher import Matcher, PhraseMatcher
-import os
+from flask_apscheduler import APScheduler
 
 
 # Initialization
@@ -31,6 +31,11 @@ for root, dirs, files in os.walk(par_dir):
     model_dir = "{}/{}".format(par_dir, dirs[0])
     break
 spacy_model = spacy.load(model_dir)
+
+# start scheduler
+scheduler = APScheduler()
+scheduler.init_app(application)
+scheduler.start()
 
 from app import classes
 from app import routes  # Added at the bottom to avoid circular dependencies
