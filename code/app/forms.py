@@ -30,25 +30,25 @@ class UploadFileForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-class DiseaseField(FlaskForm):
-    """form class with static fields for Disease"""
-    disease = TextAreaField()
+# class DiseaseField(FlaskForm):
+#     """form class with static fields for Disease"""
+#     disease = TextAreaField()
 
 
-class MedicationField(FlaskForm):
-    """form class with static fields Medication"""
-    medication = TextAreaField()
+# class MedicationField(FlaskForm):
+#     """form class with static fields Medication"""
+#     medication = TextAreaField()
 
 
 class ModelResultsForm(FlaskForm):
     """Class for uploading file when submitted"""
-    history_present_diseases = FormField(DiseaseField)
-    history_past_diseases = FormField(DiseaseField)
-    history_social_diseases = FormField(DiseaseField)
-    assessment_diseases = FormField(DiseaseField)
+    history_present_diseases = TextAreaField()
+    history_past_diseases = TextAreaField()
+    history_social_diseases = TextAreaField()
+    assessment_diseases = TextAreaField()
 
-    medications = FormField(MedicationField)
-    allergy_medications = FormField(MedicationField)
+    medications = TextAreaField()
+    allergy_medications = TextAreaField()
 
     submit = SubmitField('Submit')
 

@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, \
 from flask_login import current_user, login_user, login_required, logout_user
 from app.classes import User, Data
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
-    ModelResultsForm, DiseaseField, MedicationField
+    ModelResultsForm
 from app.nlp import prepare_note
 from app import db, login_manager, spacy_model
 from datetime import timedelta, datetime
@@ -250,25 +250,20 @@ def results(filename):
 
     else:
         # History of present illness
-        history_present_diseases = DiseaseField()
         history_present_diseases_string = ''
         for d in result['history of present illness']['diseases']:
             history_present_diseases_string += d['name'].title() + '\n'
-        history_present_diseases.disease = history_present_diseases_string
-        form.history_present_diseases = history_present_diseases
+        form.history_present_diseases = history_present_diseases_string
 
         # Past medical and surgical history
-        history_past_diseases = DiseaseField()
         history_past_diseases_string = ''
         for d in result['past medical and surgical history']['diseases']:
             history_past_diseases_string += d['name'].title() + '\n'
-        history_past_diseases.disease = history_past_diseases_string
-        form.history_past_diseases = history_past_diseases
+        form.history_past_diseases = history_past_diseases_string
 
         # Medications
-        medications = MedicationField()
         medications_string = ''
-        for m in result['medications']['medications']:
+        for m in result['medications prior to admission']['medications']:
             medications_string += m['name'].title()
             if m['amount']:
                 medications_string += ' ' + m['amount']
@@ -278,11 +273,9 @@ def results(filename):
                 medications_string += ' ' + m['method']
 
             medications_string += '\n'
-        medications.medication = medications_string
-        form.medications = medications
+        form.medications = medications_string
 
         # Allergy medications
-        allergy_medications = MedicationField()
         allergy_medications_string = ''
         for m in result['allergies']['medications']:
             allergy_medications_string += m['name'].title()
@@ -294,24 +287,21 @@ def results(filename):
                 allergy_medications_string += ' ' + m['method']
 
             allergy_medications_string += '\n'
-        allergy_medications.medication = allergy_medications_string
-        form.allergy_medications = allergy_medications
+        form.allergy_medications = allergy_medications_string
 
         # Social history
-        history_social_diseases = DiseaseField()
         history_social_diseases_string = ''
         for d in result['social history']['diseases']:
             history_social_diseases_string += d['name'].title() + '\n'
-        history_social_diseases.disease = history_social_diseases_string
-        form.history_social_diseases = history_social_diseases
+
+        form.history_social_diseases = history_social_diseases_string
 
         # Impression/Assessment
-        assessment_diseases = DiseaseField()
         assessment_diseases_string = ''
         for d in result['impression']['diseases']:
             assessment_diseases_string += d['name'].title() + '\n'
-        assessment_diseases.disease = assessment_diseases_string
-        form.assessment_diseases = assessment_diseases
+
+        form.assessment_diseases = assessment_diseases_string
 
 
         # for i in range(len(result)):
