@@ -176,11 +176,11 @@ def results(user, transcription):
 
             if entity in txt:
                 start = re.search(entity, txt).start()
-                end = re.search(entity, txt).end() - 1
+                end = re.search(entity, txt).end()
             else:
                 txt = entity
                 start = 0
-                end = len(entity) - 1
+                end = len(entity)
 
             upload_row = Data(id=current_id,
                               mrn=mrn,
