@@ -158,7 +158,7 @@ def results(user, transcription):
         current_id = User.query.filter_by(username=user).first().id
         row_info = list()
         now_utc = pytz.utc.localize(datetime.utcnow())
-        timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+        now_pst = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
         for sub in proper_title_keys:
             txt = example_result[sub.lower()]["text"].lower()
 
@@ -191,7 +191,7 @@ def results(user, transcription):
                               end=end,
                               label=label,
                               subject_id=sub_id,
-                              timestamp=timestamp)
+                              timestamp=now_pst)
             db.session.add(upload_row)
 
         # Delete the row from the Queue Table
