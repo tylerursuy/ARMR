@@ -133,7 +133,7 @@ def results(user, transcription):
     queue_row = Queue.query.filter_by(transcription_id=transcription).first()
     mrn = queue_row.mrn
     example_result = json.loads(queue_row.content)
-    result = list(example_result.items())
+    result = example_result
     proper_title_keys = [
                 k.title() for k in list(example_result.keys())]
 
