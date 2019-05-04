@@ -26,7 +26,11 @@ login_manager.init_app(application)
 
 # load the spacy model
 par_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-spacy_model = spacy.load("{}/models/en_ner_bc5cdr_md-0.1.0".format(par_dir))
+par_dir += "/models"
+for root, dirs, files in os.walk(par_dir):
+    model_dir = "{}/{}".format(par_dir, dirs[0])
+    break
+spacy_model = spacy.load(model_dir)
 
 # start scheduler
 scheduler = APScheduler()

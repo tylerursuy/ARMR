@@ -85,6 +85,19 @@ class Data(db.Model):
         self.subject_id = subject_id
         self.timestamp = timestamp
 
+    def __repr__(self):
+        info = (self.id, self.mrn, self.transcription_id, self.text,
+                self.entity, self.start, self.end, self.label,
+                self.subject_id, self.timestamp)
+        row = ""
+        m = len(info) - 1
+        for r in range(len(info)):
+            if r != m:
+                row += str(info[r]) + "/col/"
+            else:
+                row += str(info[r])
+        return row
+
 
 class Queue(db.Model):
     """Schema for 'queue' table in database.

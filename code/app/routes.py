@@ -180,9 +180,10 @@ def results(filename):
 
         current_id = User.query.filter_by(username=user).first().id
         row_info = list()
-        tz = pytz.timezone("US/Pacific")
-        timestamp = datetime.now(tz)
-
+        
+        now_utc = pytz.utc.localize(datetime.utcnow())
+        now_pst = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+        
         for ent_d in db_diseases['history of present illness']:
             row_info.append(('history of present illness',
                 example_result['history of present illness']['text'], 
@@ -231,7 +232,7 @@ def results(filename):
                               end=end,
                               label=label,
                               subject_id=sub_id,
-                              timestamp=timestamp)
+                              timestamp=now_pst)
             db.session.add(upload_row)
 
         # Delete the row from the Queue Table

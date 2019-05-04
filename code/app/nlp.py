@@ -7,6 +7,7 @@ import random
 import spacy
 from spacy.matcher import Matcher, PhraseMatcher
 from spacy.util import minibatch, compounding
+import shutil
 import speech_recognition as sr
 
 TERMINOLOGY = [
@@ -127,29 +128,65 @@ def parse_medication(span):
 
 def train(model, train_data, output_dir, n_iter=100):
     """Named Entity Recognition Training loop"""
-    other_pipes = [pipe for pipe in model.pipe_names if pipe != "ner"]
-    with model.disable_pipes(*other_pipes):
+    if model is not None:
+        nlp = spacy.load(model)  # load existing spaCy model
+        print("Loaded model '%s'" % model)
+    else:
+        nlp = spacy.blank("en")  # create blank Language class
+        print("Created blank 'en' model")
+
+    # create the built-in pipeline components and add them to the pipeline
+    # nlp.create_pipe works for built-ins that are registered with spaCy
+    if "ner" not in nlp.pipe_names:
+        ner = nlp.create_pipe("ner")
+        nlp.add_pipe(ner, last=True)
+    # otherwise, get it so we can add labels
+    else:
+        ner = nlp.get_pipe("ner")
+
+    # add labels
+    for _, annotations in train_data:
+        for ent in annotations.get("entities"):
+            ner.add_label(ent[2])
+
+    # get names of other pipes to disable them during training
+    other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
+    with nlp.disable_pipes(*other_pipes):  # only train NER
+        # reset and initialize the weights randomly – but only if we're
+        # training a new model
+        if model is None:
+            nlp.begin_training()
         for itn in range(n_iter):
             random.shuffle(train_data)
             losses = {}
+            # batch up the examples using spaCy's minibatch
             batches = minibatch(train_data, size=compounding(4.0, 32.0, 1.001))
             for batch in batches:
                 texts, annotations = zip(*batch)
-                model.update(
-                    texts,
-                    annotations,
-                    drop=0.5,
+                nlp.update(
+                    texts,  # batch of texts
+                    annotations,  # batch of annotations
+                    drop=0.2,  # dropout - make it harder to memorise data
                     losses=losses,
                 )
             print("Losses", losses)
 
-    if output_dir is not None:
-        output_dir = Path(output_dir)
-        if not output_dir.exists():
-            output_dir.mkdir()
-        model.to_disk(output_dir)
-        print("Saved model to ", output_dir)
+    current_version = output_dir[97:].split(".")[1]
+    full_path = output_dir[:97]
+    new_version = "0." + str(int(current_version) + 1) + ".0"
+    full_path += new_version
 
+    if full_path is not None:
+        full_path = Path(full_path)
+        if not full_path.exists():
+            full_path.mkdir()
+        nlp.to_disk(full_path)
+        print("Saved model to ", full_path)
+
+    shutil.rmtree(output_dir)
+    print("Deleted current model ", output_dir)
+
+    return nlp, full_path
 
 def transcribe(filepath):
     r = sr.Recognizer()
