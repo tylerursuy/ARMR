@@ -119,6 +119,27 @@ class Queue(db.Model):
         self.filename = filename
 
 
+class History(db.Model):
+    """Schema for 'queue' table in database.
+    Functions to add observations."""
+    __tablename__ = "history"
+    index = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, nullable=False)
+    mrn = db.Column(db.Integer, nullable=False)
+    transcription_id = db.Column(db.String(80), nullable=False)
+    timestamp = db.Column(db.DateTime)
+    filename = db.Column(db.String(80), nullable=False)
+    content = db.Column(db.Text, nullable=True)
+
+    def __init__(self, id, mrn, transcription_id, timestamp, filename, content):
+        self.id = id
+        self.mrn = mrn
+        self.transcription_id = transcription_id
+        self.timestamp = timestamp
+        self.filename = filename
+        self.content = content
+
+
 @login_manager.user_loader
 def load_user(id):
     """Get the user with a given user id."""

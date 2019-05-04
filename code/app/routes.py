@@ -2,7 +2,7 @@ from app import application, db
 from flask import render_template, redirect, url_for, \
     flash, request, session, g
 from flask_login import current_user, login_user, login_required, logout_user
-from app.classes import User, Data, Queue
+from app.classes import User, Data, Queue, History
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
     ModelResultsForm, DiseaseField, MedicationField
 from app.nlp import prepare_note
@@ -194,14 +194,25 @@ def results(user, transcription):
                               timestamp=now_pst)
             db.session.add(upload_row)
 
-        # Delete the row from the Queue Table
+        # Add it to the history table
+        now_utc = pytz.utc.localize(datetime.utcnow())
+        timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+        history_row = History(id=current_id,
+                            mrn=mrn,
+                            transcription_id=transcription,
+                            timestamp=timestamp,
+                            filename=queue_row.filename,
+                            # TODO: queuq_row needs to include changes made from the results page
+                            content=queue_row.content)
+        db.session.add(history_row)
+
+                # Delete the row from the Queue Table
         Queue.query.filter_by(transcription_id=transcription).delete()
 
         db.session.commit()
 
         # if the query table not empty for this user, then re-direct to the queue
         # otherwise redirect to upload
-        current_id = User.query.filter_by(username=user).first().id
         uploads = Queue.query.filter_by(id=current_id).first()
         if uploads:
             return redirect(url_for('queue', user=user))
@@ -240,6 +251,14 @@ def results(user, transcription):
 
     return render_template('results.html', form=form, titles=proper_title_keys,
                            result=example_result)
+
+
+@application.route('/history/<user>', methods=['GET', 'POST'])
+@login_required
+def history(user):
+    current_id = User.query.filter_by(username=user).first().id
+    uploads = History.query.filter_by(id=current_id).order_by(History.timestamp.desc()).all()
+    return render_template('history.html', uploads=uploads)
 
 
 @application.errorhandler(401)
