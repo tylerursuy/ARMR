@@ -106,11 +106,11 @@ def upload(user):
             current_id = User.query.filter_by(username=user).first().id
             transcription_id = str(uuid.uuid4())
             now_utc = pytz.utc.localize(datetime.utcnow())
-            timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+            now_pst = now_utc - timedelta(hours=7)
             upload_row = Queue(id=current_id,
                                mrn=mrn,
                                transcription_id=transcription_id,
-                               timestamp=timestamp,
+                               timestamp=now_pst,
                                filename=filename)
             db.session.add(upload_row)
             db.session.commit()
@@ -158,7 +158,7 @@ def results(user, transcription):
         current_id = User.query.filter_by(username=user).first().id
         row_info = list()
         now_utc = pytz.utc.localize(datetime.utcnow())
-        now_pst = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+        now_pst = now_utc - timedelta(hours=7)
         for sub in proper_title_keys:
             txt = example_result[sub.lower()]["text"].lower()
 
@@ -171,8 +171,11 @@ def results(user, transcription):
         for t in range(len(row_info)):
             sub_id = row_info[t][0]
             txt = row_info[t][1]
-            entity = row_info[t][3]
             label = row_info[t][2]
+            if label == "medication":
+                entity = row_info[t][3].split(" ")[0]
+            else:
+                entity = row_info[t][3]
 
             if entity in txt:
                 start = re.search(entity, txt).start()
