@@ -32,12 +32,12 @@ class UploadFileForm(FlaskForm):
 
 class ModelResultsForm(FlaskForm):
     """Class for uploading file when submitted"""
-    history_present_diseases = TextAreaField()
-    history_past_diseases = TextAreaField()
-    history_social_diseases = TextAreaField()
-    assessment_diseases = TextAreaField()
+    history_present_diseases = TextAreaField('Diseases')
+    history_past_diseases = TextAreaField('Diseases')
+    history_social_diseases = TextAreaField('Diseases')
+    assessment_diseases = TextAreaField('Diseases')
 
-    medications = TextAreaField()
-    allergy_medications = TextAreaField()
+    medications = TextAreaField('Medications')
+    allergy_medications = TextAreaField('Medications')
 
     submit = SubmitField('Submit')

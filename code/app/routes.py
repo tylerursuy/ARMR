@@ -130,7 +130,9 @@ def queue(user):
 @application.route('/results/<user>/<transcription>', methods=['GET', 'POST'])
 @login_required
 def results(user, transcription):
-    example_result = session.get('example_result', None)
+    queue_row = Queue.query.filter_by(transcription_id=transcription).first()
+    mrn = queue_row.mrn
+    example_result = json.loads(queue_row.content)
     # result = list(example_result.items())
     result = example_result
 
@@ -252,7 +254,6 @@ def results(user, transcription):
     else:
         # History of present illness
         history_present_diseases_string = ''
-        print(result)
         for d in result['history of present illness']['diseases']:
             history_present_diseases_string += d['name'].title() + '\n'
         form.history_present_diseases.data = history_present_diseases_string
