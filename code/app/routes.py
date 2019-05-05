@@ -130,6 +130,9 @@ def queue(user):
 @application.route('/results/<user>/<transcription>', methods=['GET', 'POST'])
 @login_required
 def results(filename):
+    # Hello
+
+
     example_result = session.get('example_result', None)
     # result = list(example_result.items())
     result = example_result
