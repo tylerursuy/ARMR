@@ -178,11 +178,13 @@ def results(user, transcription):
         db_diseases['impression'] = assessment_split
 
         current_id = User.query.filter_by(username=user).first().id
-        row_info = list()
-        
         now_utc = pytz.utc.localize(datetime.utcnow())
         now_pst = now_utc - timedelta(hours=7)
         
+        print('db_diseases', db_diseases)
+        print('db_meds', db_meds)
+
+        row_info = list()
         for ent_d in db_diseases['history of present illness']:
             row_info.append(('history of present illness',
                 result['history of present illness']['text'], 
@@ -245,8 +247,9 @@ def results(user, transcription):
                             transcription_id=transcription,
                             timestamp=timestamp,
                             filename=queue_row.filename,
-                            # TODO: queuq_row needs to include changes made from the results page
-                            content=queue_row.content)
+                            content=queue_row.content,
+                            diseases=json.dumps(db_diseases),
+                            meds=json.dumps(db_meds))
         db.session.add(history_row)
 
                 # Delete the row from the Queue Table
@@ -337,12 +340,15 @@ def history(user):
 def report(user, transcription):
     history_row = History.query.filter_by(transcription_id=transcription).first()
     mrn = history_row.mrn
-    example_result = json.loads(history_row.content)
-    result = list(example_result.items())
+    result = json.loads(history_row.content)
     proper_title_keys = [
-                k.title() for k in list(example_result.keys())]
+                k.title() for k in list(result.keys())]
 
-    return render_template('report.html', result=result, len=len(result))
+    diseases = json.loads(history_row.diseases)
+    meds = json.loads(history_row.meds)
+
+    return render_template('report.html', titles=proper_title_keys, result=result,\
+        diseases=diseases, meds=meds)
 
 
 @application.errorhandler(401)

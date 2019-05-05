@@ -129,15 +129,20 @@ class History(db.Model):
     transcription_id = db.Column(db.String(80), nullable=False)
     timestamp = db.Column(db.DateTime)
     filename = db.Column(db.String(80), nullable=False)
-    content = db.Column(db.Text, nullable=True)
+    content = db.Column(db.Text, nullable=False)
+    diseases = db.Column(db.Text, nullable=False)
+    meds = db.Column(db.Text, nullable=False)
 
-    def __init__(self, id, mrn, transcription_id, timestamp, filename, content):
+    def __init__(self, id, mrn, transcription_id, timestamp, filename,\
+        content, diseases, meds):
         self.id = id
         self.mrn = mrn
         self.transcription_id = transcription_id
         self.timestamp = timestamp
         self.filename = filename
         self.content = content
+        self.diseases = diseases
+        self.meds = meds
 
 
 @login_manager.user_loader

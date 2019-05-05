@@ -23,21 +23,169 @@ Results
 	}
 </style>
 
-<br/>
+<br>
 <center><h1>Physician's Record</h1></center>
 
 <br>
-{% for i in range(len) %}
-	<div class="container">
-		<h2>{{ result[i][0].title() }}</h2>
-		<div class="text_box">
-			<br/>
-			{{ '\t' + result[i][1]['text'] }}
-			<br/>
-			<br/>
-		</div>
+<div class="container">
+	<h2>History</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['history of present illness']['text'] }}
+		<br/>
+		<br/>
+		Diseases:
+		<ul>
+			{% if diseases['history of present illness'] != [] %}
+				{% for d in diseases['history of present illness']%}
+					<li>{{ d.title() }}</li>
+				{% endfor %}
+			{% else %}
+			<li>None</li>
+			{% endif %}
+		</ul>
 	</div>
-{% endfor %}   
+</div>
+
+<div class="container">
+	<h2>Past Medical and Surgical History</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['past medical and surgical history']['text'] }}
+		<br/>
+		<br/>
+		Diseases:
+		<ul>
+			{% if diseases['past medical and surgical history'] != [] %}
+				{% for d in diseases['past medical and surgical history']%}
+					<li>{{ d.title() }}</li>
+				{% endfor %}
+			{% else %}
+			<li>None</li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Medications</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['medications prior to admission']['text'] }}
+		<br/>
+		<br/>
+		Medications:
+		<ul>
+			{% if meds['medications'] != [] %}
+				{% for m in meds['medications']%}
+					<li>{{ m.title() }}</li>
+				{% endfor %}
+			{% else %}
+			<li>None</li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Allergies</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['allergies']['text'] }}
+		<br/>
+		<br/>
+		Medications:
+		<ul>
+			{% if meds['allergies'] != [] %}
+				{% for m in meds['allergies']%}
+					<li>{{ m.title() }}</li>
+				{% endfor %}
+			{% else %}
+			<li>None</li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Family History</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['family history']['text'] }}
+		<br/>
+		<br/>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Social History</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['social history']['text'] }}
+		<br/>
+		<br/>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Review of Systems</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['social history']['text'] }}
+		<br/>
+		<br/>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Examination</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['physical examination']['text'] }}
+		<br/>
+		<br/>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Laboratory</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['electrocardiogram']['text'] }}
+		<br/>
+		<br/>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Assessment</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['impression']['text'] }}
+		<br/>
+		<br/>
+		Diseases:
+		<ul>
+			{% if diseases['impression'] != [] %}
+				{% for d in diseases['impression']%}
+					<li>{{ d.title() }}</li>
+				{% endfor %}
+			{% else %}
+			<li>None</li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Plan</h2>
+	<div class="text_box">
+		<br/>
+		{{ '\t' + result['recommendations']['text'] }}
+		<br/>
+		<br/>
+	</div>
+</div>
 <br/>
 
 {% endblock %}
