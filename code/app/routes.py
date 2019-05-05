@@ -106,11 +106,11 @@ def upload(user):
             current_id = User.query.filter_by(username=user).first().id
             transcription_id = str(uuid.uuid4())
             now_utc = pytz.utc.localize(datetime.utcnow())
-            timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+            now_pst = now_utc - timedelta(hours=7)
             upload_row = Queue(id=current_id,
                                mrn=mrn,
                                transcription_id=transcription_id,
-                               timestamp=timestamp,
+                               timestamp=now_pst,
                                filename=filename)
             db.session.add(upload_row)
             db.session.commit()
@@ -135,9 +135,6 @@ def results(user, transcription):
     example_result = json.loads(queue_row.content)
     # result = list(example_result.items())
     result = example_result
-
-    proper_title_keys = session.get('proper_title_keys', None)
-    mrn = session.get('mrn', None)
 
     form = ModelResultsForm()
     if form.validate_on_submit():
@@ -184,7 +181,7 @@ def results(user, transcription):
         row_info = list()
         
         now_utc = pytz.utc.localize(datetime.utcnow())
-        now_pst = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+        now_pst = now_utc - timedelta(hours=7)
         
         for ent_d in db_diseases['history of present illness']:
             row_info.append(('history of present illness',
@@ -214,8 +211,11 @@ def results(user, transcription):
         for t in range(len(row_info)):
             sub_id = row_info[t][0]
             txt = row_info[t][1]
-            entity = row_info[t][3]
             label = row_info[t][2]
+            if label == "medication":
+                entity = row_info[t][3].split(" ")[0]
+            else:
+                entity = row_info[t][3]
 
             if entity in txt:
                 start = re.search(entity, txt).start()
