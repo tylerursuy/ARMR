@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, \
 from flask_login import current_user, login_user, login_required, logout_user
 from app.classes import User, Data, Queue
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
-    ModelResultsForm, DiseaseField, MedicationField
+    ModelResultsForm
 from app.nlp import prepare_note
 from app import db, login_manager, spacy_model
 from datetime import timedelta, datetime
@@ -132,41 +132,81 @@ def queue(user):
 def results(user, transcription):
     queue_row = Queue.query.filter_by(transcription_id=transcription).first()
     mrn = queue_row.mrn
-    example_result = json.loads(queue_row.content)
-    result = list(example_result.items())
+    result = json.loads(queue_row.content)
     proper_title_keys = [
-                k.title() for k in list(example_result.keys())]
+                k.title() for k in list(result.keys())]
 
     form = ModelResultsForm()
     if form.validate_on_submit():
 
         db_diseases = {}
         db_meds = {}
-        for i in range(len(form.diseases)):
-            text_field = form.diseases[i].disease.data
-            split_d = [
-                e.rstrip('\r').lower() for e in text_field.split('\n')
-                if e != '']
-            db_diseases[result[i][0]] = split_d
 
-            text_field = form.medications[i].medication.data
-            split_d = [
-                e.rstrip('\r').lower() for e in text_field.split('\n')
-                if e != '']
-            db_meds[result[i][0]] = split_d
+        # History of present illness
+        history_present_text_field = form.history_present_diseases.data
+        history_present_split = [
+            e.rstrip('\r').lower() for e in history_present_text_field.split('\n')
+            if e != '']
+        db_diseases['history of present illness'] = history_present_split
+
+        # Past medical and surgical history
+        history_past_text_field = form.history_past_diseases.data
+        history_past_split = [
+            e.rstrip('\r').lower() for e in history_past_text_field.split('\n')
+            if e != '']
+        db_diseases['past medical and surgical history'] = history_past_split
+
+        # Medications
+        medications_text_field = form.medications.data
+        medications_split = [
+            e.rstrip('\r').lower() for e in medications_text_field.split('\n')
+            if e != '']
+        db_meds['medications'] = medications_split
+
+        # Allergies
+        allergy_medications_text_field = form.allergy_medications.data
+        allergy_medications_split = [
+            e.rstrip('\r').lower() for e in allergy_medications_text_field.split('\n')
+            if e != '']
+        db_meds['allergies'] = allergy_medications_split
+
+        # Assessment
+        assessment_text_field = form.assessment_diseases.data
+        assessment_split = [
+            e.rstrip('\r').lower() for e in assessment_text_field.split('\n')
+            if e != '']
+        db_diseases['impression'] = assessment_split
 
         current_id = User.query.filter_by(username=user).first().id
         row_info = list()
+        
         now_utc = pytz.utc.localize(datetime.utcnow())
         now_pst = now_utc - timedelta(hours=7)
-        for sub in proper_title_keys:
-            txt = example_result[sub.lower()]["text"].lower()
+        
+        for ent_d in db_diseases['history of present illness']:
+            row_info.append(('history of present illness',
+                result['history of present illness']['text'], 
+                'disease', ent_d))
 
-            for ent_d in db_diseases[sub.lower()]:
-                row_info.append((sub, txt, "disease", ent_d))
+        for ent_d in db_diseases['past medical and surgical history']:
+            row_info.append(('past medical and surgical history',
+                result['past medical and surgical history']['text'], 
+                'disease', ent_d))
 
-            for ent_m in db_meds[sub.lower()]:
-                row_info.append((sub, txt, "medication", ent_m))
+        for ent_d in db_meds['medications']:
+            row_info.append(('medications',
+                result['medications prior to admission']['text'], 
+                'medication', ent_d))
+
+        for ent_d in db_meds['allergies']:
+            row_info.append(('allergies',
+                result['allergies']['text'], 
+                'medication', ent_d))
+
+        for ent_d in db_diseases['impression']:
+            row_info.append(('impression',
+                result['impression']['text'], 
+                'disease', ent_d))
 
         for t in range(len(row_info)):
             sub_id = row_info[t][0]
@@ -212,37 +252,65 @@ def results(user, transcription):
             return redirect(url_for('upload', user=user))
 
     else:
-        for i in range(len(result)):
-            d_form = DiseaseField()
-            m_form = MedicationField()
-            disease_string = ''
-            medication_string = ''
+        # History of present illness
+        history_present_diseases_string = ''
+        for d in result['history of present illness']['diseases']:
+            history_present_diseases_string += d['name'].title() + '\n'
+        form.history_present_diseases.data = history_present_diseases_string
 
-            for d in result[i][1]['diseases']:
-                disease_string += d['name'].title() + '\n'
+        # Past medical and surgical history
+        history_past_diseases_string = ''
+        for d in result['past medical and surgical history']['diseases']:
+            history_past_diseases_string += d['name'].title() + '\n'
+        form.history_past_diseases.data = history_past_diseases_string
 
-            for m in result[i][1]['medications']:
-                medication_string += m['name'].title()
-                if m['amount']:
-                    medication_string += ' ' + m['amount']
-                if m['unit']:
-                    medication_string += ' ' + m['unit']
-                if m['method']:
-                    medication_string += ' ' + m['method']
+        # Medications
+        medications_string = ''
+        for m in result['medications prior to admission']['medications']:
+            medications_string += m['name'].title()
+            if m['amount']:
+                medications_string += ' ' + m['amount']
+            if m['unit']:
+                medications_string += ' ' + m['unit']
+            if m['method']:
+                medications_string += ' ' + m['method']
 
-                medication_string += '\n'
+            medications_string += '\n'
+        form.medications.data = medications_string
 
-            d_form.disease = disease_string
-            m_form.medication = medication_string
+        # Allergy medications
+        allergy_medications_string = ''
+        for m in result['allergies']['medications']:
+            allergy_medications_string += m['name'].title()
+            if m['amount']:
+                allergy_medications_string += ' ' + m['amount']
+            if m['unit']:
+                allergy_medications_string += ' ' + m['unit']
+            if m['method']:
+                allergy_medications_string += ' ' + m['method']
 
-            form.diseases.append_entry(d_form)
-            form.medications.append_entry(m_form)
+            allergy_medications_string += '\n'
+        form.allergy_medications.data = allergy_medications_string
+
+        # Social history
+        history_social_diseases_string = ''
+        for d in result['social history']['diseases']:
+            history_social_diseases_string += d['name'].title() + '\n'
+
+        form.history_social_diseases.data = history_social_diseases_string
+
+        # Impression/Assessment
+        assessment_diseases_string = ''
+        for d in result['impression']['diseases']:
+            assessment_diseases_string += d['name'].title() + '\n'
+
+        form.assessment_diseases.data = assessment_diseases_string
 
         return render_template(
             'results.html', form=form, result=result, len=len(result))
 
     return render_template('results.html', form=form, titles=proper_title_keys,
-                           result=example_result)
+                           result=result)
 
 
 @application.errorhandler(401)

@@ -28,23 +28,121 @@ Results
 
 <br>
  <form method="POST"> <!-- post : handle submission -->
-    {{ form.hidden_tag() }} 
-    {% for i in range(len) %}
+    {{ form.hidden_tag() }}
 	<div class="container">
-		<h2>{{ result[i][0].title() }}</h2>
+		<h2>History</h2>
 		<div class="text_box">
 			<br/>
-			{{ '\t' + result[i][1]['text'] }}
+			{{ '\t' + result['history of present illness']['text'] }}
 			<br/>
 			<br/>
-			{{ form.diseases[i].csrf_token() }}
-			{{ wtf.form_field(form.diseases[i].disease, cols="20", rows="3") }}
-			<br/>
-			{{ form.medications[i].csrf_token() }}
-			{{ wtf.form_field(form.medications[i].medication, cols="20", rows="3") }}
+			{{ wtf.form_field(form.history_present_diseases, cols="20", rows="5") }}
 		</div>
 	</div>
-	{% endfor %}   
+
+	<div class="container">
+		<h2>Past Medical and Surgical History</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['past medical and surgical history']['text'] }}
+			<br/>
+			<br/>
+			{{ wtf.form_field(form.history_past_diseases, cols="20", rows="5") }}
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Medications</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['medications prior to admission']['text'] }}
+			<br/>
+			<br/>
+			{{ wtf.form_field(form.medications, cols="20", rows="5") }}
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Allergies</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['allergies']['text'] }}
+			<br/>
+			<br/>
+			{{ wtf.form_field(form.allergy_medications, cols="20", rows="5") }}
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Family History</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['family history']['text'] }}
+			<br/>
+			<br/>
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Social History</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['social history']['text'] }}
+			<br/>
+			<br/>
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Review of Systems</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['social history']['text'] }}
+			<br/>
+			<br/>
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Examination</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['physical examination']['text'] }}
+			<br/>
+			<br/>
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Laboratory</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['electrocardiogram']['text'] }}
+			<br/>
+			<br/>
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Assessment</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['impression']['text'] }}
+			<br/>
+			<br/>
+			{{ wtf.form_field(form.assessment_diseases, cols="20", rows="3") }}
+		</div>
+	</div>
+
+	<div class="container">
+		<h2>Plan</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result['recommendations']['text'] }}
+			<br/>
+			<br/>
+		</div>
+	</div>
     <center> {{ wtf.form_field(form.submit)}} </center>
 </form>
 <br>
