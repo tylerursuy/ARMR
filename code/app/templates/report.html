@@ -1,0 +1,43 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Results
+{% endblock %}
+
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<style>
+	.text_box {
+/*	  width: 60%;*/
+      border-style: solid;
+      border-width: 2px;
+      margin-bottom: 10px;
+      border-color: rgba(0,0,0);
+      padding-left: 15px;
+      padding-right: 15px;
+      font-size: medium;
+	}
+</style>
+
+<br/>
+<center><h1>Physician's Record</h1></center>
+
+<br>
+{% for i in range(len) %}
+	<div class="container">
+		<h2>{{ result[i][0].title() }}</h2>
+		<div class="text_box">
+			<br/>
+			{{ '\t' + result[i][1]['text'] }}
+			<br/>
+			<br/>
+		</div>
+	</div>
+{% endfor %}   
+<br/>
+
+{% endblock %}

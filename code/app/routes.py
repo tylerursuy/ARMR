@@ -261,6 +261,19 @@ def history(user):
     return render_template('history.html', uploads=uploads)
 
 
+@application.route('/report/<user>/<transcription>', methods=['GET', 'POST'])
+@login_required
+def report(user, transcription):
+    history_row = History.query.filter_by(transcription_id=transcription).first()
+    mrn = history_row.mrn
+    example_result = json.loads(history_row.content)
+    result = list(example_result.items())
+    proper_title_keys = [
+                k.title() for k in list(example_result.keys())]
+
+    return render_template('report.html', result=result, len=len(result))
+
+
 @application.errorhandler(401)
 def unauthorized(e):
     return redirect(url_for('index'))

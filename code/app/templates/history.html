@@ -31,7 +31,7 @@ History
 		   	<td>{{ row.filename }}</td>
 		    <td>{{ row.mrn }}</td>
 		    <td>{{ row.timestamp }}</td>
-		    <td><a href="{{ url_for('results', user=current_user.username, transcription=row.transcription_id) }}">View Report</a></td>
+		    <td><a href="{{ url_for('report', user=current_user.username, transcription=row.transcription_id) }}">View Report</a></td>
 		  </tr>
 		{% endfor %}
 	  </tbody>
