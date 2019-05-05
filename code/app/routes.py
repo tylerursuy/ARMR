@@ -132,10 +132,9 @@ def queue(user):
 def results(user, transcription):
     queue_row = Queue.query.filter_by(transcription_id=transcription).first()
     mrn = queue_row.mrn
-    example_result = json.loads(queue_row.content)
-    result = example_result
+    result = json.loads(queue_row.content)
     proper_title_keys = [
-                k.title() for k in list(example_result.keys())]
+                k.title() for k in list(result.keys())]
 
     form = ModelResultsForm()
     if form.validate_on_submit():
@@ -186,27 +185,27 @@ def results(user, transcription):
         
         for ent_d in db_diseases['history of present illness']:
             row_info.append(('history of present illness',
-                example_result['history of present illness']['text'], 
+                result['history of present illness']['text'], 
                 'disease', ent_d))
 
         for ent_d in db_diseases['past medical and surgical history']:
             row_info.append(('past medical and surgical history',
-                example_result['past medical and surgical history']['text'], 
+                result['past medical and surgical history']['text'], 
                 'disease', ent_d))
 
         for ent_d in db_meds['medications']:
             row_info.append(('medications',
-                example_result['medications prior to admission']['text'], 
+                result['medications prior to admission']['text'], 
                 'medication', ent_d))
 
         for ent_d in db_meds['allergies']:
             row_info.append(('allergies',
-                example_result['allergies']['text'], 
+                result['allergies']['text'], 
                 'medication', ent_d))
 
         for ent_d in db_diseases['impression']:
             row_info.append(('impression',
-                example_result['impression']['text'], 
+                result['impression']['text'], 
                 'disease', ent_d))
 
         for t in range(len(row_info)):
@@ -311,7 +310,7 @@ def results(user, transcription):
             'results.html', form=form, result=result, len=len(result))
 
     return render_template('results.html', form=form, titles=proper_title_keys,
-                           result=example_result)
+                           result=result)
 
 
 @application.errorhandler(401)
