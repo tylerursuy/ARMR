@@ -330,11 +330,18 @@ def results(user, transcription):
 @application.route('/history/<user>', methods=['GET', 'POST'])
 @login_required
 def history(user):
-    form = SearchForm()
-
     current_id = User.query.filter_by(username=user).first().id
-    uploads = History.query.filter_by(id=current_id).order_by(History.timestamp.desc()).all()
-    return render_template('history.html', form=form, uploads=uploads)
+    uploads = History.query.filter_by(id=current_id\
+        ).order_by(History.timestamp.desc()).all()
+    reset_option=False
+
+    form = SearchForm()
+    if form.validate_on_submit() and form.search.data:
+        uploads = History.query.filter_by(id=current_id, \
+            mrn=form.search_text.data).order_by(History.timestamp.desc()).all()
+        reset_option=True
+
+    return render_template('history.html', form=form, uploads=uploads, reset=reset_option)
 
 
 @application.route('/report/<user>/<transcription>', methods=['GET', 'POST'])

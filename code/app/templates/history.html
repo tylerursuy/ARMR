@@ -20,9 +20,15 @@ History
 <br/>
 <div class="container">
 	<center><h2>History</h2></center>
+	{% if reset %}
+	<form method="POST" class="form-inline float-sm-left">
+		{{ wtf.form_field(form.reset_button)}} 
+	</form>
+	{% endif %}
 	<form method="POST" class="form-inline float-sm-right">
 		{{ form.hidden_tag() }}
-		{{ wtf.form_field(form.search_text, class="form-control mr-sm-2", placeholder="MRN") }}{{ wtf.form_field(form.search) }}
+		{{ wtf.form_field(form.search_text, class="form-control mr-sm-2", placeholder="MRN") }}
+		{{ wtf.form_field(form.search) }}
 	</form>
 	<br/>
 	<br/>
@@ -30,8 +36,8 @@ History
 	<table class="table table-hover">
 	  <thead class="thead-dark">
 	    <tr>
-	      <th scope="col">Filename</th>
 	      <th scope="col">MRN</th>
+	      <th scope="col">Filename</th>
 	      <th scope="col">Timestamp</th>
 	      <th scope="col">Physician's Report</th>
 	    </tr>
@@ -39,8 +45,8 @@ History
 	  <tbody>
 	    {% for row in uploads %}
 		  <tr>
+			<td>{{ row.mrn }}</td>
 		   	<td>{{ row.filename }}</td>
-		    <td>{{ row.mrn }}</td>
 		    <td>{{ row.timestamp }}</td>
 		    <td><a href="{{ url_for('report', user=current_user.username, transcription=row.transcription_id) }}">View Report</a></td>
 		  </tr>
