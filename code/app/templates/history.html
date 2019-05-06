@@ -10,11 +10,23 @@ History
 {% endblock %}
 
 {% block content %}
+<style type="text/css">
+	.form-group.required label{
+  		display: None;
+	}
+</style>
+
 <br/>
 <br/>
 <div class="container">
 	<center><h2>History</h2></center>
+	<form method="POST" class="form-inline float-sm-right">
+		{{ form.hidden_tag() }}
+		{{ wtf.form_field(form.search_text, class="form-control mr-sm-2", placeholder="MRN") }}{{ wtf.form_field(form.search) }}
+	</form>
 	<br/>
+	<br/>
+
 	<table class="table table-hover">
 	  <thead class="thead-dark">
 	    <tr>

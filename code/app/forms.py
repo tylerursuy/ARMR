@@ -41,3 +41,8 @@ class ModelResultsForm(FlaskForm):
     allergy_medications = TextAreaField('Medications')
 
     submit = SubmitField('Submit')
+
+class SearchForm(FlaskForm):
+    search_text = StringField('MRN', validators=[InputRequired()])
+    search = SubmitField('Search')
+

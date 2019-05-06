@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, \
 from flask_login import current_user, login_user, login_required, logout_user
 from app.classes import User, Data, Queue, History
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
-    ModelResultsForm
+    ModelResultsForm, SearchForm
 from app.nlp import prepare_note
 from app import db, login_manager, spacy_model
 from datetime import timedelta, datetime
@@ -330,9 +330,11 @@ def results(user, transcription):
 @application.route('/history/<user>', methods=['GET', 'POST'])
 @login_required
 def history(user):
+    form = SearchForm()
+
     current_id = User.query.filter_by(username=user).first().id
     uploads = History.query.filter_by(id=current_id).order_by(History.timestamp.desc()).all()
-    return render_template('history.html', uploads=uploads)
+    return render_template('history.html', form=form, uploads=uploads)
 
 
 @application.route('/report/<user>/<transcription>', methods=['GET', 'POST'])
