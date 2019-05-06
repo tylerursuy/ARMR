@@ -1,0 +1,174 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Results
+{% endblock %}
+
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<br/>
+	<center><h1>Physician's Record</h1></center>
+	<br/>
+	<div class="card">
+		<h3 class="card-header">History</h3>
+		<div class="card-body">	
+			{{ '\t' + result['history of present illness']['text'] }}
+			<br/>
+			<br/>
+			Diseases:
+			<ul>
+				{% if diseases['history of present illness'] != [] %}
+					{% for d in diseases['history of present illness']%}
+						<li>{{ d.title() }}</li>
+					{% endfor %}
+				{% else %}
+				<li>None</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Past Medical and Surgical History</h3>
+		<div class="card-body">	
+			{{ '\t' + result['past medical and surgical history']['text'] }}
+			<br/>
+			<br/>
+			Diseases:
+			<ul>
+				{% if diseases['past medical and surgical history'] != [] %}
+					{% for d in diseases['past medical and surgical history']%}
+						<li>{{ d.title() }}</li>
+					{% endfor %}
+				{% else %}
+				<li>None</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Medications</h3>
+		<div class="card-body">	
+			{{ '\t' + result['medications prior to admission']['text'] }}
+			<br/>
+			<br/>
+			Medications:
+			<ul>
+				{% if meds['medications'] != [] %}
+					{% for m in meds['medications']%}
+						<li>{{ m.title() }}</li>
+					{% endfor %}
+				{% else %}
+				<li>None</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Allergies</h3>
+		<div class="card-body">	
+			{{ '\t' + result['allergies']['text'] }}
+			<br/>
+			<br/>
+			Medications:
+			<ul>
+				{% if meds['allergies'] != [] %}
+					{% for m in meds['allergies']%}
+						<li>{{ m.title() }}</li>
+					{% endfor %}
+				{% else %}
+				<li>None</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Family History</h3>
+		<div class="card-body">	
+			{{ '\t' + result['family history']['text'] }}
+			<br/>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Social History</h3>
+		<div class="card-body">	
+			{{ '\t' + result['social history']['text'] }}
+			<br/>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Review of Systems</h3>
+		<div class="card-body">	
+			{{ '\t' + result['social history']['text'] }}
+			<br/>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Examination</h3>
+		<div class="card-body">	
+			{{ '\t' + result['physical examination']['text'] }}
+			<br/>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Laboratory</h3>
+		<div class="card-body">	
+			{{ '\t' + result['electrocardiogram']['text'] }}
+			<br/>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Assessment</h3>
+		<div class="card-body">	
+			{{ '\t' + result['impression']['text'] }}
+			<br/>
+			<br/>
+			Diseases:
+			<ul>
+				{% if diseases['impression'] != [] %}
+					{% for d in diseases['impression']%}
+						<li>{{ d.title() }}</li>
+					{% endfor %}
+				{% else %}
+				<li>None</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+	<br/>
+
+	<div class="card">
+		<h3 class="card-header">Plan</h3>
+		<div class="card-body">	
+			{{ '\t' + result['recommendations']['text'] }}
+			<br/>
+		</div>
+	</div>
+	<br/>
+	<br/>
+
+</div>
+{% endblock %}

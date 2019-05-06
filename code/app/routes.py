@@ -2,9 +2,9 @@ from app import application, db
 from flask import render_template, redirect, url_for, \
     flash, request, session, g
 from flask_login import current_user, login_user, login_required, logout_user
-from app.classes import User, Data, Queue
+from app.classes import User, Data, Queue, History
 from app.forms import LogInForm, RegistrationForm, UploadFileForm, \
-    ModelResultsForm
+    ModelResultsForm, SearchForm
 from app.nlp import prepare_note
 from app import db, login_manager, spacy_model
 from datetime import timedelta, datetime
@@ -178,11 +178,13 @@ def results(user, transcription):
         db_diseases['impression'] = assessment_split
 
         current_id = User.query.filter_by(username=user).first().id
-        row_info = list()
-        
         now_utc = pytz.utc.localize(datetime.utcnow())
         now_pst = now_utc - timedelta(hours=7)
         
+        print('db_diseases', db_diseases)
+        print('db_meds', db_meds)
+
+        row_info = list()
         for ent_d in db_diseases['history of present illness']:
             row_info.append(('history of present illness',
                 result['history of present illness']['text'], 
@@ -237,14 +239,26 @@ def results(user, transcription):
                               timestamp=now_pst)
             db.session.add(upload_row)
 
-        # Delete the row from the Queue Table
+        # Add it to the history table
+        now_utc = pytz.utc.localize(datetime.utcnow())
+        timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
+        history_row = History(id=current_id,
+                            mrn=mrn,
+                            transcription_id=transcription,
+                            timestamp=timestamp,
+                            filename=queue_row.filename,
+                            content=queue_row.content,
+                            diseases=json.dumps(db_diseases),
+                            meds=json.dumps(db_meds))
+        db.session.add(history_row)
+
+                # Delete the row from the Queue Table
         Queue.query.filter_by(transcription_id=transcription).delete()
 
         db.session.commit()
 
         # if the query table not empty for this user, then re-direct to the queue
         # otherwise redirect to upload
-        current_id = User.query.filter_by(username=user).first().id
         uploads = Queue.query.filter_by(id=current_id).first()
         if uploads:
             return redirect(url_for('queue', user=user))
@@ -311,6 +325,39 @@ def results(user, transcription):
 
     return render_template('results.html', form=form, titles=proper_title_keys,
                            result=result)
+
+
+@application.route('/history/<user>', methods=['GET', 'POST'])
+@login_required
+def history(user):
+    current_id = User.query.filter_by(username=user).first().id
+    uploads = History.query.filter_by(id=current_id\
+        ).order_by(History.timestamp.desc()).all()
+    reset_option=False
+
+    form = SearchForm()
+    if form.validate_on_submit() and form.search.data:
+        uploads = History.query.filter_by(id=current_id, \
+            mrn=form.search_text.data).order_by(History.timestamp.desc()).all()
+        reset_option=True
+
+    return render_template('history.html', form=form, uploads=uploads, reset=reset_option)
+
+
+@application.route('/report/<user>/<transcription>', methods=['GET', 'POST'])
+@login_required
+def report(user, transcription):
+    history_row = History.query.filter_by(transcription_id=transcription).first()
+    mrn = history_row.mrn
+    result = json.loads(history_row.content)
+    proper_title_keys = [
+                k.title() for k in list(result.keys())]
+
+    diseases = json.loads(history_row.diseases)
+    meds = json.loads(history_row.meds)
+
+    return render_template('report.html', titles=proper_title_keys, result=result,\
+        diseases=diseases, meds=meds)
 
 
 @application.errorhandler(401)
