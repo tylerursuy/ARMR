@@ -199,17 +199,16 @@ def transcribe(filepath):
 
 @scheduler.task('interval', id='pipeline', seconds=10)
 def process_transcription():
-    upload = Queue.query.filter_by(content=None).order_by(
-        Queue.timestamp.asc()).first()
-    if upload and not upload.content:
-        filename = upload.filename
-        file_dir_path = os.path.join(application.instance_path, 'files')
-        file_path = os.path.join(file_dir_path, filename)
-        if os.path.exists(file_path):
-            talk_to_text = transcribe(file_path)
-            os.remove(file_path)
-            result = prepare_note(spacy_model, talk_to_text)
-            upload.content = json.dumps(result)
-            db.session.commit()
-        else:
-            print('file_does_not_exsist')
+    uploads = Queue.query.filter_by(content=None).order_by(
+        Queue.timestamp.asc()).all()
+    for upload in uploads:
+        if not upload.content:
+            filename = upload.filename
+            file_dir_path = os.path.join(application.instance_path, 'files')
+            file_path = os.path.join(file_dir_path, filename)
+            if os.path.exists(file_path):
+                talk_to_text = transcribe(file_path)
+                os.remove(file_path)
+                result = prepare_note(spacy_model, talk_to_text)
+                upload.content = json.dumps(result)
+                db.session.commit()
