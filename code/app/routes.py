@@ -360,6 +360,11 @@ def report(user, transcription):
         diseases=diseases, meds=meds)
 
 
+@application.route('/about')
+def about():
+    return render_template('about_us.html')
+
+
 @application.errorhandler(401)
 def unauthorized(e):
     return redirect(url_for('index'))
