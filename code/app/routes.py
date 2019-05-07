@@ -180,9 +180,6 @@ def results(user, transcription):
         current_id = User.query.filter_by(username=user).first().id
         now_utc = pytz.utc.localize(datetime.utcnow())
         now_pst = now_utc - timedelta(hours=7)
-        
-        print('db_diseases', db_diseases)
-        print('db_meds', db_meds)
 
         row_info = list()
         for ent_d in db_diseases['history of present illness']:
