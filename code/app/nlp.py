@@ -37,12 +37,18 @@ def prepare_note(model, text):
 
 def categorize_note(model, text):
     """Breakup notes into different sections"""
-    categories = {"history of present illness": {"text":"None"}, "past medical and surgical history": {"text":"None"},
-        "past medical history": {"text":"None"}, "review of systems": {"text":"None"}, "family history": {"text":"None"},
-        "social history": {"text":"None"}, "medications prior to admission": {"text":"None"},
-        "allergies": {"text":"None"}, "physical examination": {"text":"None"}, "electrocardiogram": {"text":"None"}, 
-        "impression": {"text":"None"}, "recommendations": {"text":"None"}}
-    # categories = {}
+    categories = {"history of present illness": {"text":"None"},
+        "past medical and surgical history": {"text":"None"},
+        "past medical history": {"text":"None"},
+        "review of systems": {"text":"None"},
+        "family history": {"text":"None"},
+        "social history": {"text":"None"},
+        "medications prior to admission": {"text":"None"},
+        "allergies": {"text":"None"},
+        "physical examination": {"text":"None"},
+        "electrocardiogram": {"text":"None"},
+        "impression": {"text":"None"},
+        "recommendations": {"text":"None"}}
     matcher = PhraseMatcher(model.vocab)
     patterns = [model.make_doc(text) for text in TERMINOLOGY]
     matcher.add("Categories", None, *patterns)
