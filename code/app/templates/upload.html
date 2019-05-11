@@ -5,28 +5,32 @@
 File Upload
 {% endblock %}
 
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .card-img-top.img-rounded {
+      height: 500px;
+    }
+
+    .card-img-overlay{
+      width: 25rem;
+    }
+        div#loading {
+        width: 100px;
+        height: 100px;
+        display: none;
+        background: url(/static/loader.gif) no-repeat;
+        cursor: wait;
+      }
+  </style>
+{% endblock %}
+
 {% block navbar %}
     {% include 'navbar.html' %}
 {% endblock %}
 
 {% block content %}
-
-<style>
-    .container {
-      width: 25rem;
-      border-style: solid;
-      border-width: 1px;
-      margin-bottom: 10px;
-      border-color: rgba(128,128,128);
-    }
-      div#loading {
-      width: 100px;
-      height: 100px;
-      display: none;
-      background: url(/static/loader.gif) no-repeat;
-      cursor: wait;
-    }
-</style>
 
 <script type="text/javascript">// <![CDATA[
   function loading(){
@@ -34,21 +38,24 @@ File Upload
   }
 // ]]></script>
 
-<br>
-<br>
-<center><h2>Upload Audio</h2></center>
-
-<div class="container">
-    {% include 'flash.html' %}
-  	<br/>
-    <form method="POST" enctype="multipart/form-data"> <!-- post : handle submission -->
-        {{ form.csrf_token }} <!--  render the form's CSRF field like normal. -->
-        {{ wtf.form_field(form.mrn) }}
-        {{ wtf.form_field(form.file_selector) }}
-        <br>
-        <center>{{ wtf.form_field(form.submit)}}</center>
-    </form>
+<div class="card">
+  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue-shade.png') }}>
+  <div class="card-img-overlay mx-auto">
     <br/>
+    <center><h2>Upload Audio</h2></center>
+      {% include 'flash.html' %}
+    	<br/>
+      <div class="shadow-lg p-4 mb-4 bg-white rounded">
+        <form method="POST" enctype="multipart/form-data"> 
+          {{ form.csrf_token }} 
+          {{ wtf.form_field(form.mrn) }}
+          {{ wtf.form_field(form.file_selector) }}
+          <br>
+          <center>{{ wtf.form_field(form.submit)}}</center>
+        </form>
+      <br/>
+      </div>
+    </div>
 </div> <!-- /container -->
 <center><div id="loading" style="margin-left:4%;"></div></center>
 
