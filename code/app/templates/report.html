@@ -1,18 +1,13 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-<!--- Extend Here to add head.html -->
-{% block head %}
-    {{ super() }}
-    {% include 'head.html' %}
-{% endblock %}
-
 {% block title %}
 Report
 {% endblock %}
 
 {% block head %}
   {{ super() }}
+  {% include 'head.html' %}
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <style>
     .card-img-top.img-rounded {
