@@ -17,11 +17,11 @@ Results
     }
 
     .shadow-lg.bg-white.rounded {
-      width: 80%;
+      width: 75%;
     }
 
     .card {
-	   font-size: 18px;
+	   font-size: 19px;
 	}
 
   </style>
@@ -36,7 +36,7 @@ Results
 <form method="POST">
 	{{ form.hidden_tag() }}
 	<div class="card">
-	  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue-shade.png') }}>
+	  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue6.jpg') }}>
 	  <div class="card-img-overlay mx-auto">
 	    <br/>
 	    <center><h2>Physician's Record</h2></center>
@@ -44,7 +44,7 @@ Results
 	    	<br/>
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">History</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">History</h4>
 				<div class="card-body">	
 					{{ '\t' + result['history of present illness']['text'] }}
 					<br/>
@@ -58,7 +58,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Past Medical and Surgical History</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Past Medical and Surgical History</h4>
 				<div class="card-body">	
 					{{ '\t' + result['past medical and surgical history']['text'] }}
 					<br/>
@@ -67,12 +67,11 @@ Results
 				</div>
 			</div>
 	      </div>
-
 	      <br/>
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Medications</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Medications</h4>
 				<div class="card-body">
 					{{ '\t' + result['medications prior to admission']['text'] }}
 					<br/>
@@ -86,7 +85,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Allergies</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Allergies</h4>
 				<div class="card-body">	
 					{{ '\t' + result['allergies']['text'] }}
 					<br/>
@@ -100,7 +99,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Family History</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Family History</h4>
 				<div class="card-body">	
 					{{ '\t' + result['family history']['text'] }}
 					<br/>
@@ -112,7 +111,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Social History</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Social History</h4>
 				<div class="card-body">	
 					{{ '\t' + result['social history']['text'] }}
 					<br/>
@@ -124,7 +123,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Review of Systems</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Review of Systems</h4>
 				<div class="card-body">	
 					{{ '\t' + result['review of systems']['text'] }}
 					<br/>
@@ -136,7 +135,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Examination</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Examination</h4>
 				<div class="card-body">	
 					{{ '\t' + result['physical examination']['text'] }}
 					<br/>
@@ -148,7 +147,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Laboratory</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Laboratory</h4>
 				<div class="card-body">	
 					{{ '\t' + result['electrocardiogram']['text'] }}
 					<br/>
@@ -160,7 +159,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Assessment</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Assessment</h4>
 				<div class="card-body">	
 					{{ '\t' + result['impression']['text'] }}
 					<br/>
@@ -174,7 +173,7 @@ Results
 
 	      <div class="shadow-lg bg-white rounded mx-auto">
 	        <div class="card" style="border-color: grey;">
-				<h3 class="card-header" style="border-color: grey;">Plan</h3>
+				<h4 class="card-header text-white" style="background-color: #040640">Plan</h4>
 				<div class="card-body">	
 					{{ '\t' + result['recommendations']['text'] }}
 					<br/>
