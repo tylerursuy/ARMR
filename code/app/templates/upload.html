@@ -1,6 +1,12 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
+<!--- Extend Here to add head.html -->
+{% block head %}
+    {{ super() }}
+    {% include 'head.html' %}
+{% endblock %}
+
 {% block title %}
 Upload
 {% endblock %}
