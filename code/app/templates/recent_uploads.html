@@ -5,40 +5,57 @@
 Upload Status
 {% endblock %}
 
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .card-img-top.img-rounded {
+      height: 100%;
+      max-height: 95vh;
+      object-fit: cover;
+    }
+  </style>
+{% endblock %}
+
 {% block navbar %}
 	{% include 'navbar.html' %}
 {% endblock %}
 
 {% block content %}
-<br/>
-<br/>
-<div class="container">
-	<center><h2>Upload Status</h2></center>
-	<br/>
-	<table class="table table-hover">
-	  <thead class="thead-dark">
-	    <tr>
-	      <th scope="col">Filename</th>
-	      <th scope="col">MRN</th>
-	      <th scope="col">Timestamp</th>
-	      <th scope="col">Status</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    {% for row in uploads %}
-		  <tr>
-		   	<td>{{ row.filename }}</td>
-		    <td>{{ row.mrn }}</td>
-		    <td>{{ row.timestamp }}</td>
-		    {% if row.content %}
-		    <td><a href="{{ url_for('results', user=current_user.username, transcription=row.transcription_id) }}">Ready For Review</a></td>
-		    {% else %}
-		    <td>Processing</td>
-		    {% endif %}
-		  </tr>
-		{% endfor %}
-	  </tbody>
-	</table>
+<div class="card">
+  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue-shade.png') }}>
+  <div class="card-img-overlay mx-auto">
+    <br/>
+    <center><h2>Upload Status</h2></center>
+      {% include 'flash.html' %}
+    	<br/>
+      <div class="shadow-lg bg-white">
+        <table class="table table-hover">
+		  <thead class="thead-dark">
+		    <tr>
+		      <th scope="col">Filename</th>
+		      <th scope="col">MRN</th>
+		      <th scope="col">Timestamp</th>
+		      <th scope="col">Status</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    {% for row in uploads %}
+			  <tr>
+			   	<td>{{ row.filename }}</td>
+			    <td>{{ row.mrn }}</td>
+			    <td>{{ row.timestamp }}</td>
+			    {% if row.content %}
+			    <td><a href="{{ url_for('results', user=current_user.username, transcription=row.transcription_id) }}">Ready For Review</a></td>
+			    {% else %}
+			    <td>Processing</td>
+			    {% endif %}
+			  </tr>
+			{% endfor %}
+		  </tbody>
+		</table>
+      </div>
+    </div>
 </div>
 
 {% endblock %}
