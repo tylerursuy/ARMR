@@ -5,35 +5,40 @@
 Register
 {% endblock %}
 
+{% block head %}
+    {{ super() }}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .shadow-lg{
+      width: 35rem;
+    }
+  </style>
+{% endblock %}
+
 {% block navbar %}
     {% include 'navbar.html' %}
 {% endblock %}
 
 {% block content %}
-
-<style>
-    .container {
-      width: 27rem;
-      margin-bottom: 10px;
-      border-color: rgba(128,128,128);
-    }
-</style>
-
-<br>
-<br>
-<center><h2>Create New Account</h2></center>
-<div class="container">
+<div class="card">
+  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue6.jpg') }}>
+  <div class="card-img-overlay mx-auto">
     {% include 'flash.html' %}
-    <br>
-    <form method="POST"> <!-- post : handle submission -->
+    <br/>
+    <center><h2>Create New Account</h2></center> 
+    <br/>
+    <div class="shadow-lg p-4 mb-4 bg-white rounded mx-auto">
+        <form method="POST">
         {{ form.hidden_tag() }}    
         {{ wtf.form_field(form.username) }}
         {{ wtf.form_field(form.password) }}
         {{ wtf.form_field(form.password_confirmation) }}
-        <center> {{ wtf.form_field(form.submit)}} </center>
-    </form>
-    <br>
-    <center> Already have an account? <a href="/">Log in</a> </center>
-    <br>
-</div> <!-- /container -->
+        <center>{{ wtf.form_field(form.submit)}}</center>
+        </form>
+        <p>
+        <center> Already have an account? <a href="/">Log in</a> </center>
+    </div>
+  </div>
+</div>
+<br/>
 {% endblock %}

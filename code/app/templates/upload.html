@@ -2,7 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
-File Upload
+Upload
 {% endblock %}
 
 {% block head %}
@@ -17,7 +17,7 @@ File Upload
     }
 
     .card-img-overlay{
-      width: 25rem;
+      width: 30rem;
     }
     
     div#loading {
@@ -46,7 +46,7 @@ File Upload
   <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue6.jpg') }}>
   <div class="card-img-overlay mx-auto">
     <br/>
-    <center><h2>Upload Audio</h2></center>
+    <center><h2>Audio Upload</h2></center>
       {% include 'flash.html' %}
     	<br/>
       <div class="shadow-lg p-4 mb-4 bg-white rounded">

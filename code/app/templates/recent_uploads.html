@@ -16,6 +16,10 @@ Upload Status
       position: fixed;
     }
 
+    th {
+	  background-color: #040640;
+	  color: white;
+	}
   </style>
 {% endblock %}
 
@@ -31,9 +35,9 @@ Upload Status
     <center><h2>Upload Status</h2></center>
       {% include 'flash.html' %}
     	<br/>
-      <div class="shadow-lg bg-white">
+      <div class="shadow-lg bg-white mx-auto">
         <table class="table table-hover">
-		  <thead class="thead-dark">
+		  <thead>
 		    <tr>
 		      <th scope="col">Filename</th>
 		      <th scope="col">MRN</th>
