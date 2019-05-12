@@ -24,10 +24,10 @@ Step Seven: Delete old weights?
 Step Seven: Re-Deploy app.
 
 Notes:
-    - Do not need to establish ssh connection if file is already present on server?
-        - Figure out how to run bash commands from script to close screen without ssh connection
-
-
+    - Do not need to establish ssh connection if file is already present
+    on server?
+        - Figure out how to run bash commands from script to close screen
+        without ssh connection
 """
 
 
@@ -135,9 +135,11 @@ def push_weights(zip_file):
     s3 = boto3.client('s3')
     bucket_name = 'msds-armr'
 
-    # Uploads the given file using a managed uploader, which will split up large
+    # Uploads the given file using a managed uploader,
+    # which will split up large
     # files automatically and upload parts in parallel.
-    s3.upload_file(zip_file, bucket_name, zip_file, ExtraArgs={'ACL': 'public-read'})
+    s3.upload_file(zip_file, bucket_name, zip_file,
+                   ExtraArgs={'ACL': 'public-read'})
 
 
 def redeploy():
@@ -158,4 +160,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

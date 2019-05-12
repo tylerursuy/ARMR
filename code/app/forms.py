@@ -25,7 +25,7 @@ class LogInForm(FlaskForm):
 class UploadFileForm(FlaskForm):
     """Class for uploading file when submitted"""
     mrn = StringField('MRN (Medical Record Number)',
-                       validators=[InputRequired()])
+                      validators=[InputRequired()])
     file_selector = FileField('File', validators=[FileRequired()])
     submit = SubmitField('Submit')
 
@@ -42,8 +42,8 @@ class ModelResultsForm(FlaskForm):
 
     submit = SubmitField('Submit')
 
+
 class SearchForm(FlaskForm):
     search_text = StringField('MRN', validators=[InputRequired()])
     search = SubmitField('Search')
     reset_button = SubmitField('Reset')
-
