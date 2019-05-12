@@ -1,14 +1,30 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-<!--- Extend Here to add head.html -->
-{% block head %}
-    {{ super() }}
-    {% include 'head.html' %}
-{% endblock %}
-
 {% block title %}
 ARMR
+{% endblock %}
+
+{% block head %}
+	{{ super() }}
+  {% include 'head.html' %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .card-img-top.img-rounded {
+      height: 100%;
+      max-height: 95vh;
+      object-fit: cover;
+      position: fixed;
+    }
+
+    .img_box{
+      width: 35rem;
+    }
+
+    .shadow-lg{
+      width: 25rem;
+    }
+  </style>
 {% endblock %}
 
 {% block navbar %}
@@ -16,43 +32,35 @@ ARMR
 {% endblock %}
 
 {% block content %}
-<style>
-    .container {
-      width: 22rem;
-      margin-bottom: 10px;
-      border-color: rgba(128,128,128);
-    }
-
-}
-</style>
-
-<br>
-<div class="img_box" align="center">
-    <figure class="figure">
-    <img src={{ url_for('static', filename='logo_ftw.png') }} width="85%" height="85%" class="figure-img img-fluid img-rounded">
-    </figure>
-
-    <h3>Audio Recorded Medical Record</h3>
-
+<div class="card">
+  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue6.jpg') }}>
+  <div class="card-img-overlay mx-auto">
+  	{% include 'flash.html' %}
+  	<div class="img_box mx-auto" align="center">
+	    <figure class="figure">
+	    <img src={{ url_for('static', filename='ARMR2.png') }} width="75%" height="75%" class="figure-img img-fluid img-rounded">
+	    </figure>
+	    <h3>Audio Recorded Medical Record</h3>
+	</div>  
+    <br/>
+      {% if not current_user.is_authenticated %}
+      <div class="shadow-lg p-4 mb-4 bg-white rounded mx-auto">
+    	<form method="POST">
+	        {{ form.hidden_tag() }}
+	        {{ wtf.form_field(form.username) }}
+	        {{ wtf.form_field(form.password) }}
+	        <center>{{ wtf.form_field(form.submit)}}</center>
+	    </form>
+	    <p>
+	    <center><a href="{{url_for('register')}}">Create new account</a></center>
+	   </div>
+	  {% else %}
+		<center><h4>{{ current_user.username }}</h4></center>
+		<center><a href="/logout" class="btn btn-primary">Log out</a></center>
+	  {% endif %}
+    </div>
 </div>
-
-{% if not current_user.is_authenticated %}
-<div class="container">
-    {% include 'flash.html' %}
-    <form method="POST">
-        <p>
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.username) }}
-        {{ wtf.form_field(form.password) }}
-        <center>{{ wtf.form_field(form.submit)}}</center>
-    </form>
-    <center><a href="{{url_for('register')}}">Create new account</a></center>
-</div>
-{% else %}
-    <center><h4>{{ current_user.username }}</h4></center>
-    <center><a href="/logout" class="btn btn-primary">Log out</a></center>
-{% endif %}
-
+<br/>
 {% endblock %}
 
 

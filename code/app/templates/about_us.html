@@ -1,14 +1,22 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-<!--- Extend Here to add head.html -->
-{% block head %}
-    {{ super() }}
-    {% include 'head.html' %}
+{% block title %}
+About Us
 {% endblock %}
 
-{% block title %}
-File Upload
+{% block head %}
+	{{ super() }}
+	{% include 'head.html' %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .card-img-top.img-rounded {
+      height: 100%;
+      max-height: 95vh;
+      object-fit: cover;
+      position: fixed;
+    }
+  </style>
 {% endblock %}
 
 {% block navbar %}
@@ -16,45 +24,45 @@ File Upload
 {% endblock %}
 
 {% block content %}
-
-<br/>
-<div class="container">
-	<div class="card-body">
+<div class="card">
+  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue6.jpg') }}>
+  <div class="card-img-overlay mx-auto">
+  	<div class="card-body">
 	    <center><h1 class="card-title">ARMR - Audio Recorded Medical Record</h1></center>
-	    <hr>
-	    <br/>
-	    <br/>
-	    <blockquote class="blockquote mb-0">
-	      <center><h5>"I went into medicine to work with people, not be a data clerk."</h5></center>
-	      <br/>
-	      <p>ARMR uses a physician’s voice to speed up the EMR data entry process. Using cutting edge machine learning techniques, we are able to reduce the time physicians spend manually entering information into EMRs by up to 45%.</p>
-	    </blockquote>
-	    <br/>
-	    <hr>
-	    <img class="img-fluid" src={{ url_for('static', filename='armr_solution.png') }} alt="Card image cap">
-	    <br/>
-	    <hr>
-	    <blockquote class="blockquote mb-0">
-	      <br/>
-	      <center><h3>With ARMR you can...</h3></center>
-	      <br/>
-	      <div style="float: left; width: 50%;">
-			<ul>
-			<li>Benefit the physician and patient interaction</li>
-	      	<li>Free up to 20-45% of a physician’s time</li>
-			</ul>
-			</div>
-			<div style="float: right; width: 50%;">
-			<ul>
-			<li>Integrate with existing EMR systems</li>
-	      	<li>Increase hospital revenue</li>
-			</ul>
-		  </div>
-		  <br/>
-	    </blockquote>
-	</div>
+		    <hr>
+		    <br/>
+		    <br/>
+		    <blockquote class="blockquote mb-0">
+		      <center><h5>"I went into medicine to work with people, not be a data clerk."</h5></center>
+		      <br/>
+		      <p>ARMR uses a physician’s voice to speed up the EMR data entry process. Using cutting edge machine learning techniques, we are able to reduce the time physicians spend manually entering information into EMRs by up to 45%.</p>
+		    </blockquote>
+		    <br/>
+		    <hr>
+		    <img class="img-fluid" src={{ url_for('static', filename='armr_solution.png') }} alt="Card image cap">
+		    <br/>
+		    <hr>
+		    <blockquote class="blockquote mb-0">
+		      <br/>
+		      <center><h3>With ARMR you can...</h3></center>
+		      <br/>
+		      <div style="float: left; width: 50%;">
+				<ul>
+				<li>Benefit the physician and patient interaction</li>
+		      	<li>Free up to 20-45% of a physician’s time</li>
+				</ul>
+				</div>
+				<div style="float: right; width: 50%;">
+				<ul>
+				<li>Integrate with existing EMR systems</li>
+		      	<li>Increase hospital revenue</li>
+				</ul>
+			  </div>
+			  <br/>
+		    </blockquote>
+		</div>
+    </div>
 </div>
 <br/>
-<br/>
-<br/>
+
 {% endblock %}

@@ -1,14 +1,34 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-<!--- Extend Here to add head.html -->
-{% block head %}
-    {{ super() }}
-    {% include 'head.html' %}
+{% block title %}
+Upload
 {% endblock %}
 
-{% block title %}
-File Upload
+{% block head %}
+  {{ super() }}
+  {% include 'head.html' %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .card-img-top.img-rounded {
+      height: 100%;
+      max-height: 95vh;
+      object-fit: cover;
+      position: fixed;
+    }
+
+    .card-img-overlay{
+      width: 30rem;
+    }
+    
+    div#loading {
+      width: 100px;
+      height: 100px;
+      display: none;
+      background: url(/static/loader.gif) no-repeat;
+      cursor: wait;
+    }
+  </style>
 {% endblock %}
 
 {% block navbar %}
@@ -17,45 +37,30 @@ File Upload
 
 {% block content %}
 
-<style>
-    .container {
-      width: 25rem;
-      border-style: solid;
-      border-width: 1px;
-      margin-bottom: 10px;
-      border-color: rgba(128,128,128);
-    }
-      div#loading {
-      width: 100px;
-      height: 100px;
-      display: none;
-      background: url(/static/loader.gif) no-repeat;
-      cursor: wait;
-    }
-</style>
-
 <script type="text/javascript">// <![CDATA[
   function loading(){
     $("#loading").show();
   }
 // ]]></script>
 
-<br>
-<br>
-<center><h2>Upload Audio</h2></center>
-
-<div class="container">
-    {% include 'flash.html' %}
-  	<br/>
-    <form method="POST" enctype="multipart/form-data"> <!-- post : handle submission -->
-        {{ form.csrf_token }} <!--  render the form's CSRF field like normal. -->
-        {{ wtf.form_field(form.mrn) }}
-        {{ wtf.form_field(form.file_selector) }}
-        <br>
-        <center>{{ wtf.form_field(form.submit)}}</center>
-    </form>
+<div class="card">
+  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue6.jpg') }}>
+  <div class="card-img-overlay mx-auto">
     <br/>
-</div> <!-- /container -->
+    <center><h2>Audio Upload</h2></center>
+      {% include 'flash.html' %}
+    	<br/>
+      <div class="shadow-lg p-4 mb-4 bg-white rounded">
+        <form method="POST" enctype="multipart/form-data"> 
+          {{ form.csrf_token }} 
+          {{ wtf.form_field(form.mrn) }}
+          {{ wtf.form_field(form.file_selector) }}
+          <br>
+          <center>{{ wtf.form_field(form.submit)}}</center>
+        </form>
+      </div>
+    </div>
+</div> 
 <center><div id="loading" style="margin-left:4%;"></div></center>
 
 <script>document.getElementsByClassName("btn-primary")[0].setAttribute("onclick", "loading()");</script>
