@@ -5,22 +5,35 @@
 History
 {% endblock %}
 
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .card-img-top.img-rounded {
+      height: 100%;
+      max-height: 95vh;
+      object-fit: cover;
+    }
+
+    .form-group.required label{
+  		display: None;
+	}
+  </style>
+{% endblock %}
+
 {% block navbar %}
 	{% include 'navbar.html' %}
 {% endblock %}
 
 {% block content %}
-<style type="text/css">
-	.form-group.required label{
-  		display: None;
-	}
-</style>
+<div class="card">
+  <img class="card-img-top img-rounded" src={{ url_for('static',filename='blue-shade.png') }}>
+  <div class="card-img-overlay mx-auto">
+    <br/>
+    <center><h2>History</h2></center>
+    {% include 'flash.html' %}
 
-<br/>
-<br/>
-<div class="container">
-	<center><h2>History</h2></center>
-	{% if reset %}
+    {% if reset %}
 	<form method="POST" class="form-inline float-sm-left">
 		{{ wtf.form_field(form.reset_button)}} 
 	</form>
@@ -30,29 +43,33 @@ History
 		{{ wtf.form_field(form.search_text, class="form-control mr-sm-2", placeholder="MRN") }}
 		{{ wtf.form_field(form.search) }}
 	</form>
-	<br/>
-	<br/>
 
-	<table class="table table-hover">
-	  <thead class="thead-dark">
-	    <tr>
-	      <th scope="col">MRN</th>
-	      <th scope="col">Filename</th>
-	      <th scope="col">Timestamp</th>
-	      <th scope="col">Physician's Report</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    {% for row in uploads %}
-		  <tr>
-			<td>{{ row.mrn }}</td>
-		   	<td>{{ row.filename }}</td>
-		    <td>{{ row.timestamp }}</td>
-		    <td><a href="{{ url_for('report', user=current_user.username, transcription=row.transcription_id) }}">View Report</a></td>
-		  </tr>
-		{% endfor %}
-	  </tbody>
-	</table>
+	<br/>
+	<br/>
+	
+      <div class="shadow-lg bg-white">
+        <table class="table table-hover">
+		  <thead class="thead-dark">
+		    <tr>
+		      <th scope="col">MRN</th>
+		      <th scope="col">Filename</th>
+		      <th scope="col">Timestamp</th>
+		      <th scope="col">Physician's Report</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    {% for row in uploads %}
+			  <tr>
+				<td>{{ row.mrn }}</td>
+			   	<td>{{ row.filename }}</td>
+			    <td>{{ row.timestamp }}</td>
+			    <td><a href="{{ url_for('report', user=current_user.username, transcription=row.transcription_id) }}">View Report</a></td>
+			  </tr>
+			{% endfor %}
+		  </tbody>
+		</table>
+      </div>
+    </div>
 </div>
 
 {% endblock %}
