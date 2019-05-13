@@ -123,7 +123,8 @@ def upload(user):
 @login_required
 def queue(user):
     current_id = User.query.filter_by(username=user).first().id
-    uploads = Queue.query.filter_by(id=current_id).order_by(Queue.timestamp.desc()).all()
+    uploads = Queue.query.filter_by(id=current_id
+                                    ).order_by(Queue.timestamp.desc()).all()
     return render_template('recent_uploads.html', uploads=uploads)
 
 
@@ -133,8 +134,6 @@ def results(user, transcription):
     queue_row = Queue.query.filter_by(transcription_id=transcription).first()
     mrn = queue_row.mrn
     result = json.loads(queue_row.content)
-    proper_title_keys = [
-                k.title() for k in list(result.keys())]
 
     form = ModelResultsForm()
     if form.validate_on_submit():
@@ -145,35 +144,40 @@ def results(user, transcription):
         # History of present illness
         history_present_text_field = form.history_present_diseases.data
         history_present_split = [
-            e.rstrip('\r').lower() for e in history_present_text_field.split('\n')
+            e.rstrip('\r').lower() for e in
+            history_present_text_field.split('\n')
             if e != '']
         db_diseases['history of present illness'] = history_present_split
 
         # Past medical and surgical history
         history_past_text_field = form.history_past_diseases.data
         history_past_split = [
-            e.rstrip('\r').lower() for e in history_past_text_field.split('\n')
+            e.rstrip('\r').lower() for e in
+            history_past_text_field.split('\n')
             if e != '']
         db_diseases['past medical and surgical history'] = history_past_split
 
         # Medications
         medications_text_field = form.medications.data
         medications_split = [
-            e.rstrip('\r').lower() for e in medications_text_field.split('\n')
+            e.rstrip('\r').lower() for e in
+            medications_text_field.split('\n')
             if e != '']
         db_meds['medications'] = medications_split
 
         # Allergies
         allergy_medications_text_field = form.allergy_medications.data
         allergy_medications_split = [
-            e.rstrip('\r').lower() for e in allergy_medications_text_field.split('\n')
+            e.rstrip('\r').lower() for e in
+            allergy_medications_text_field.split('\n')
             if e != '']
         db_meds['allergies'] = allergy_medications_split
 
         # Assessment
         assessment_text_field = form.assessment_diseases.data
         assessment_split = [
-            e.rstrip('\r').lower() for e in assessment_text_field.split('\n')
+            e.rstrip('\r').lower() for e in
+            assessment_text_field.split('\n')
             if e != '']
         db_diseases['impression'] = assessment_split
 
@@ -184,28 +188,28 @@ def results(user, transcription):
         row_info = list()
         for ent_d in db_diseases['history of present illness']:
             row_info.append(('history of present illness',
-                result['history of present illness']['text'], 
-                'disease', ent_d))
+                             result['history of present illness']['text'],
+                             'disease', ent_d))
 
         for ent_d in db_diseases['past medical and surgical history']:
             row_info.append(('past medical and surgical history',
-                result['past medical and surgical history']['text'], 
-                'disease', ent_d))
+                             result['past medical and surgical history']
+                             ['text'], 'disease', ent_d))
 
         for ent_d in db_meds['medications']:
             row_info.append(('medications',
-                result['medications prior to admission']['text'], 
-                'medication', ent_d))
+                             result['medications prior to admission']
+                             ['text'], 'medication', ent_d))
 
         for ent_d in db_meds['allergies']:
             row_info.append(('allergies',
-                result['allergies']['text'], 
-                'medication', ent_d))
+                             result['allergies']['text'],
+                             'medication', ent_d))
 
         for ent_d in db_diseases['impression']:
             row_info.append(('impression',
-                result['impression']['text'], 
-                'disease', ent_d))
+                             result['impression']['text'],
+                             'disease', ent_d))
 
         for t in range(len(row_info)):
             sub_id = row_info[t][0]
@@ -240,21 +244,22 @@ def results(user, transcription):
         now_utc = pytz.utc.localize(datetime.utcnow())
         timestamp = now_utc.astimezone(pytz.timezone("America/Los_Angeles"))
         history_row = History(id=current_id,
-                            mrn=mrn,
-                            transcription_id=transcription,
-                            timestamp=timestamp,
-                            filename=queue_row.filename,
-                            content=queue_row.content,
-                            diseases=json.dumps(db_diseases),
-                            meds=json.dumps(db_meds))
+                              mrn=mrn,
+                              transcription_id=transcription,
+                              timestamp=timestamp,
+                              filename=queue_row.filename,
+                              content=queue_row.content,
+                              diseases=json.dumps(db_diseases),
+                              meds=json.dumps(db_meds))
         db.session.add(history_row)
 
-                # Delete the row from the Queue Table
+        # Delete the row from the Queue Table
         Queue.query.filter_by(transcription_id=transcription).delete()
 
         db.session.commit()
 
-        # if the query table not empty for this user, then re-direct to the queue
+        # if the query table not empty for this user,
+        # then re-direct to the queue
         # otherwise redirect to upload
         uploads = Queue.query.filter_by(id=current_id).first()
         if uploads:
@@ -320,41 +325,42 @@ def results(user, transcription):
         return render_template(
             'results.html', form=form, result=result, len=len(result))
 
-    return render_template('results.html', form=form, titles=proper_title_keys,
-                           result=result)
-
 
 @application.route('/history/<user>', methods=['GET', 'POST'])
 @login_required
 def history(user):
     current_id = User.query.filter_by(username=user).first().id
-    uploads = History.query.filter_by(id=current_id\
-        ).order_by(History.timestamp.desc()).all()
-    reset_option=False
+    uploads = History.query.filter_by(id=current_id).order_by(
+        History.timestamp.desc()).all()
+    reset_option = False
 
     form = SearchForm()
     if form.validate_on_submit() and form.search.data:
-        uploads = History.query.filter_by(id=current_id, \
-            mrn=form.search_text.data).order_by(History.timestamp.desc()).all()
-        reset_option=True
+        uploads = History.query.filter_by(id=current_id,
+                                          mrn=form.search_text.data
+                                          ).order_by(
+            History.timestamp.desc()).all()
+        reset_option = True
 
-    return render_template('history.html', form=form, uploads=uploads, reset=reset_option)
+    return render_template('history.html', form=form, uploads=uploads,
+                           reset=reset_option)
 
 
 @application.route('/report/<user>/<transcription>', methods=['GET', 'POST'])
 @login_required
 def report(user, transcription):
-    history_row = History.query.filter_by(transcription_id=transcription).first()
+    history_row = History.query.filter_by(transcription_id=transcription
+                                          ).first()
     mrn = history_row.mrn
     result = json.loads(history_row.content)
     proper_title_keys = [
-                k.title() for k in list(result.keys())]
+        k.title() for k in list(result.keys())]
 
     diseases = json.loads(history_row.diseases)
     meds = json.loads(history_row.meds)
 
-    return render_template('report.html', titles=proper_title_keys, result=result,\
-        diseases=diseases, meds=meds)
+    return render_template('report.html', titles=proper_title_keys,
+                           result=result, diseases=diseases, meds=meds)
 
 
 @application.route('/about')

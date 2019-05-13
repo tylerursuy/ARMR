@@ -11,11 +11,11 @@ import shutil
 import speech_recognition as sr
 
 TERMINOLOGY = [
-        "history of present illness", "past medical and surgical history",
-        "past medical history", "review of systems", "family history",
-        "social history", "medications prior to admission",
-        "allergies", "physical examination", "electrocardiogram", "impression",
-        "recommendations"]
+    "history of present illness", "past medical and surgical history",
+    "past medical history", "review of systems", "family history",
+    "social history", "medications prior to admission",
+    "allergies", "physical examination", "electrocardiogram", "impression",
+    "recommendations"]
 
 
 def load_model(model_dir):
@@ -37,18 +37,18 @@ def prepare_note(model, text):
 
 def categorize_note(model, text):
     """Breakup notes into different sections"""
-    categories = {"history of present illness": {"text":"None"},
-        "past medical and surgical history": {"text":"None"},
-        "past medical history": {"text":"None"},
-        "review of systems": {"text":"None"},
-        "family history": {"text":"None"},
-        "social history": {"text":"None"},
-        "medications prior to admission": {"text":"None"},
-        "allergies": {"text":"None"},
-        "physical examination": {"text":"None"},
-        "electrocardiogram": {"text":"None"},
-        "impression": {"text":"None"},
-        "recommendations": {"text":"None"}}
+    categories = {"history of present illness": {"text": "None"},
+                  "past medical and surgical history": {"text": "None"},
+                  "past medical history": {"text": "None"},
+                  "review of systems": {"text": "None"},
+                  "family history": {"text": "None"},
+                  "social history": {"text": "None"},
+                  "medications prior to admission": {"text": "None"},
+                  "allergies": {"text": "None"},
+                  "physical examination": {"text": "None"},
+                  "electrocardiogram": {"text": "None"},
+                  "impression": {"text": "None"},
+                  "recommendations": {"text": "None"}}
     matcher = PhraseMatcher(model.vocab)
     patterns = [model.make_doc(text) for text in TERMINOLOGY]
     matcher.add("Categories", None, *patterns)
@@ -62,7 +62,7 @@ def categorize_note(model, text):
     results = sorted(results, key=lambda tup: tup[1])
     for i in range(len(results)):
         result = results[i]
-        next_result = results[i+1] if i < len(results)-1 else None
+        next_result = results[i + 1] if i < len(results) - 1 else None
         category = str(result[0])
         start = result[2] if i != 0 else result[2]
         end = next_result[1] if next_result else None
@@ -193,6 +193,7 @@ def train(model, train_data, output_dir, n_iter=100):
     print("Deleted current model ", output_dir)
 
     return nlp, full_path
+
 
 def transcribe(filepath):
     r = sr.Recognizer()

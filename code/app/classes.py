@@ -133,8 +133,8 @@ class History(db.Model):
     diseases = db.Column(db.Text, nullable=False)
     meds = db.Column(db.Text, nullable=False)
 
-    def __init__(self, id, mrn, transcription_id, timestamp, filename,\
-        content, diseases, meds):
+    def __init__(self, id, mrn, transcription_id, timestamp, filename,
+                 content, diseases, meds):
         self.id = id
         self.mrn = mrn
         self.transcription_id = transcription_id
