@@ -82,6 +82,121 @@
 <dd><p>Connect to a specified ec2 instance</p>
 </dd></dl>
 
+<span class="target" id="module-retrain"></span><dl class="function">
+<dt id="retrain.format_data">
+<code class="descclassname">retrain.</code><code class="descname">format_data</code><span class="sig-paren">(</span><em>training_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#format_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.format_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format data into Spacy readable format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>training_data</strong> – Training data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Formatted data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="retrain.get_data">
+<code class="descclassname">retrain.</code><code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query training data from most recent week.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Training data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="retrain.get_dir">
+<code class="descclassname">retrain.</code><code class="descname">get_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#get_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.get_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load current weights.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Current model weights
+Directory to save new weights later</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="retrain.main">
+<code class="descclassname">retrain.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="retrain.push_weights">
+<code class="descclassname">retrain.</code><code class="descname">push_weights</code><span class="sig-paren">(</span><em>zip_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#push_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.push_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Why don’t we take the new weights,
+and push them somewhere else?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tar_file</strong> – New model weights tar file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="retrain.redeploy">
+<code class="descclassname">retrain.</code><code class="descname">redeploy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#redeploy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.redeploy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="retrain.retrain">
+<code class="descclassname">retrain.</code><code class="descname">retrain</code><span class="sig-paren">(</span><em>model</em>, <em>training_data</em>, <em>output_dir</em>, <em>n_iter=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#retrain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.retrain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrain model on last week’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> – Current model weights.</li>
+<li><strong>training_data</strong> – Training data from past week.</li>
+<li><strong>n_iter</strong> – Number of iterations to train.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="retrain.shut_down_app">
+<code class="descclassname">retrain.</code><code class="descname">shut_down_app</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#shut_down_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.shut_down_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shut down app currently running.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ssh</strong> – SSH connection object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="retrain.to_zip">
+<code class="descclassname">retrain.</code><code class="descname">to_zip</code><span class="sig-paren">(</span><em>model_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/retrain.html#to_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#retrain.to_zip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <span class="target" id="module-app.classes"></span><dl class="class">
 <dt id="app.classes.Data">
 <em class="property">class </em><code class="descclassname">app.classes.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>id</em>, <em>mrn</em>, <em>transcription_id</em>, <em>text</em>, <em>entity</em>, <em>start</em>, <em>end</em>, <em>label</em>, <em>subject_id</em>, <em>timestamp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/classes.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.classes.Data" title="Permalink to this definition">¶</a></dt>
@@ -142,16 +257,105 @@ Functions to add observations.</p>
 <code class="descname">transcription_id</code><a class="headerlink" href="#app.classes.Data.transcription_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="app.classes.History">
+<em class="property">class </em><code class="descclassname">app.classes.</code><code class="descname">History</code><span class="sig-paren">(</span><em>id</em>, <em>mrn</em>, <em>transcription_id</em>, <em>timestamp</em>, <em>filename</em>, <em>content</em>, <em>diseases</em>, <em>meds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/classes.html#History"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.classes.History" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schema for ‘queue’ table in database.
+Functions to add observations.</p>
 <dl class="attribute">
-<dt id="app.classes.Data.tz">
-<code class="descname">tz</code><em class="property"> = &lt;DstTzInfo 'US/Pacific' LMT-1 day, 16:07:00 STD&gt;</em><a class="headerlink" href="#app.classes.Data.tz" title="Permalink to this definition">¶</a></dt>
+<dt id="app.classes.History.content">
+<code class="descname">content</code><a class="headerlink" href="#app.classes.History.content" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.History.diseases">
+<code class="descname">diseases</code><a class="headerlink" href="#app.classes.History.diseases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.History.filename">
+<code class="descname">filename</code><a class="headerlink" href="#app.classes.History.filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.History.id">
+<code class="descname">id</code><a class="headerlink" href="#app.classes.History.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.History.index">
+<code class="descname">index</code><a class="headerlink" href="#app.classes.History.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.History.meds">
+<code class="descname">meds</code><a class="headerlink" href="#app.classes.History.meds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.History.mrn">
+<code class="descname">mrn</code><a class="headerlink" href="#app.classes.History.mrn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.History.timestamp">
+<code class="descname">timestamp</code><a class="headerlink" href="#app.classes.History.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.History.transcription_id">
+<code class="descname">transcription_id</code><a class="headerlink" href="#app.classes.History.transcription_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="app.classes.Queue">
+<em class="property">class </em><code class="descclassname">app.classes.</code><code class="descname">Queue</code><span class="sig-paren">(</span><em>id</em>, <em>mrn</em>, <em>transcription_id</em>, <em>timestamp</em>, <em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/classes.html#Queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.classes.Queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schema for ‘queue’ table in database.
+Functions to add observations.</p>
+<dl class="attribute">
+<dt id="app.classes.Queue.content">
+<code class="descname">content</code><a class="headerlink" href="#app.classes.Queue.content" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.Queue.filename">
+<code class="descname">filename</code><a class="headerlink" href="#app.classes.Queue.filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.Queue.id">
+<code class="descname">id</code><a class="headerlink" href="#app.classes.Queue.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.Queue.index">
+<code class="descname">index</code><a class="headerlink" href="#app.classes.Queue.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.Queue.mrn">
+<code class="descname">mrn</code><a class="headerlink" href="#app.classes.Queue.mrn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.Queue.timestamp">
+<code class="descname">timestamp</code><a class="headerlink" href="#app.classes.Queue.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.classes.Queue.transcription_id">
+<code class="descname">transcription_id</code><a class="headerlink" href="#app.classes.Queue.transcription_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="app.classes.User">
-<em class="property">class </em><code class="descclassname">app.classes.</code><code class="descname">User</code><span class="sig-paren">(</span><em>ph_id</em>, <em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/classes.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.classes.User" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">app.classes.</code><code class="descname">User</code><span class="sig-paren">(</span><em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/classes.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.classes.User" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schema for ‘users’ table in database.
 Functions to add observations.</p>
 <dl class="method">
@@ -249,6 +453,36 @@ Functions to add observations.</p>
 <em class="property">class </em><code class="descclassname">app.forms.</code><code class="descname">ModelResultsForm</code><span class="sig-paren">(</span><em>formdata=&lt;object object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#ModelResultsForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.forms.ModelResultsForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for uploading file when submitted</p>
 <dl class="attribute">
+<dt id="app.forms.ModelResultsForm.allergy_medications">
+<code class="descname">allergy_medications</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Medications',), {})&gt;</em><a class="headerlink" href="#app.forms.ModelResultsForm.allergy_medications" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.forms.ModelResultsForm.assessment_diseases">
+<code class="descname">assessment_diseases</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Diseases',), {})&gt;</em><a class="headerlink" href="#app.forms.ModelResultsForm.assessment_diseases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.forms.ModelResultsForm.history_past_diseases">
+<code class="descname">history_past_diseases</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Diseases',), {})&gt;</em><a class="headerlink" href="#app.forms.ModelResultsForm.history_past_diseases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.forms.ModelResultsForm.history_present_diseases">
+<code class="descname">history_present_diseases</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Diseases',), {})&gt;</em><a class="headerlink" href="#app.forms.ModelResultsForm.history_present_diseases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.forms.ModelResultsForm.history_social_diseases">
+<code class="descname">history_social_diseases</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Diseases',), {})&gt;</em><a class="headerlink" href="#app.forms.ModelResultsForm.history_social_diseases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.forms.ModelResultsForm.medications">
+<code class="descname">medications</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Medications',), {})&gt;</em><a class="headerlink" href="#app.forms.ModelResultsForm.medications" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="app.forms.ModelResultsForm.submit">
 <code class="descname">submit</code><em class="property"> = &lt;UnboundField(SubmitField, ('Submit',), {})&gt;</em><a class="headerlink" href="#app.forms.ModelResultsForm.submit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -282,6 +516,26 @@ Functions to add observations.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="app.forms.SearchForm">
+<em class="property">class </em><code class="descclassname">app.forms.</code><code class="descname">SearchForm</code><span class="sig-paren">(</span><em>formdata=&lt;object object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#SearchForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.forms.SearchForm" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="app.forms.SearchForm.reset_button">
+<code class="descname">reset_button</code><em class="property"> = &lt;UnboundField(SubmitField, ('Reset',), {})&gt;</em><a class="headerlink" href="#app.forms.SearchForm.reset_button" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.forms.SearchForm.search">
+<code class="descname">search</code><em class="property"> = &lt;UnboundField(SubmitField, ('Search',), {})&gt;</em><a class="headerlink" href="#app.forms.SearchForm.search" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="app.forms.SearchForm.search_text">
+<code class="descname">search_text</code><em class="property"> = &lt;UnboundField(StringField, ('MRN',), {'validators': [&lt;wtforms.validators.InputRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.SearchForm.search_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="app.forms.UploadFileForm">
 <em class="property">class </em><code class="descclassname">app.forms.</code><code class="descname">UploadFileForm</code><span class="sig-paren">(</span><em>formdata=&lt;object object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#UploadFileForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.forms.UploadFileForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for uploading file when submitted</p>
@@ -292,7 +546,7 @@ Functions to add observations.</p>
 
 <dl class="attribute">
 <dt id="app.forms.UploadFileForm.mrn">
-<code class="descname">mrn</code><em class="property"> = &lt;UnboundField(IntegerField, ('MRN (Medical Record Number)',), {'validators': [&lt;wtforms.validators.InputRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.UploadFileForm.mrn" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mrn</code><em class="property"> = &lt;UnboundField(StringField, ('MRN (Medical Record Number)',), {'validators': [&lt;wtforms.validators.InputRequired object&gt;]})&gt;</em><a class="headerlink" href="#app.forms.UploadFileForm.mrn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -333,12 +587,32 @@ and medications</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="app.nlp.process_transcription">
+<code class="descclassname">app.nlp.</code><code class="descname">process_transcription</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/nlp.html#process_transcription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.nlp.process_transcription" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="app.nlp.train">
 <code class="descclassname">app.nlp.</code><code class="descname">train</code><span class="sig-paren">(</span><em>model</em>, <em>train_data</em>, <em>output_dir</em>, <em>n_iter=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/nlp.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.nlp.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Named Entity Recognition Training loop</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="app.nlp.transcribe">
+<code class="descclassname">app.nlp.</code><code class="descname">transcribe</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/nlp.html#transcribe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.nlp.transcribe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <span class="target" id="module-app.routes"></span><dl class="function">
+<dt id="app.routes.about">
+<code class="descclassname">app.routes.</code><code class="descname">about</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#about"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.about" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="app.routes.history">
+<code class="descclassname">app.routes.</code><code class="descname">history</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="app.routes.index">
 <code class="descclassname">app.routes.</code><code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>The homepage for the website.</p>
@@ -357,14 +631,24 @@ and medications</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="app.routes.queue">
+<code class="descclassname">app.routes.</code><code class="descname">queue</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.queue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="app.routes.register">
 <code class="descclassname">app.routes.</code><code class="descname">register</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Page for new users to register.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="app.routes.report">
+<code class="descclassname">app.routes.</code><code class="descname">report</code><span class="sig-paren">(</span><em>user</em>, <em>transcription</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="app.routes.results">
-<code class="descclassname">app.routes.</code><code class="descname">results</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.results" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">app.routes.</code><code class="descname">results</code><span class="sig-paren">(</span><em>user</em>, <em>transcription</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.results" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -374,7 +658,7 @@ and medications</p>
 
 <dl class="function">
 <dt id="app.routes.upload">
-<code class="descclassname">app.routes.</code><code class="descname">upload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.upload" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">app.routes.</code><code class="descname">upload</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.routes.upload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a file from a client machine.</p>
 </dd></dl>
 
@@ -440,7 +724,7 @@ and medications</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019, Anish Dalal, Nicole Kacirek, Sarah Melancon, Darren Thomas, Tyler Ursuy.
+      &copy;2019, Anish Dalal, Nicole Kacirek, Darren Thomas, Sarah Melancon, Tyler Ursuy.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>

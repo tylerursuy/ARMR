@@ -35,7 +35,7 @@
   <h1>Source code for app.forms</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">flask_wtf</span> <span class="k">import</span> <span class="n">FlaskForm</span>
 <span class="kn">from</span> <span class="nn">wtforms</span> <span class="k">import</span> <span class="n">PasswordField</span><span class="p">,</span> <span class="n">StringField</span><span class="p">,</span> <span class="n">SubmitField</span><span class="p">,</span> \
-    <span class="n">SelectField</span><span class="p">,</span> <span class="n">FileField</span><span class="p">,</span> <span class="n">IntegerField</span>
+    <span class="n">SelectField</span><span class="p">,</span> <span class="n">FileField</span><span class="p">,</span> <span class="n">IntegerField</span><span class="p">,</span> <span class="n">TextAreaField</span><span class="p">,</span> <span class="n">FieldList</span><span class="p">,</span> <span class="n">FormField</span>
 <span class="kn">from</span> <span class="nn">wtforms.validators</span> <span class="k">import</span> <span class="n">DataRequired</span><span class="p">,</span> <span class="n">InputRequired</span><span class="p">,</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">flask_wtf.file</span> <span class="k">import</span> <span class="n">FileRequired</span>
 <span class="kn">from</span> <span class="nn">werkzeug</span> <span class="k">import</span> <span class="n">secure_filename</span>
@@ -59,15 +59,29 @@
 
 <div class="viewcode-block" id="UploadFileForm"><a class="viewcode-back" href="../../api.html#app.forms.UploadFileForm">[docs]</a><span class="k">class</span> <span class="nc">UploadFileForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for uploading file when submitted&quot;&quot;&quot;</span>
-    <span class="n">mrn</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;MRN (Medical Record Number)&#39;</span><span class="p">,</span>
-                       <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">InputRequired</span><span class="p">()])</span>
+    <span class="n">mrn</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;MRN (Medical Record Number)&#39;</span><span class="p">,</span>
+                      <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">InputRequired</span><span class="p">()])</span>
     <span class="n">file_selector</span> <span class="o">=</span> <span class="n">FileField</span><span class="p">(</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">FileRequired</span><span class="p">()])</span>
     <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s1">&#39;Submit&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ModelResultsForm"><a class="viewcode-back" href="../../api.html#app.forms.ModelResultsForm">[docs]</a><span class="k">class</span> <span class="nc">ModelResultsForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for uploading file when submitted&quot;&quot;&quot;</span>
+    <span class="n">history_present_diseases</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span><span class="s1">&#39;Diseases&#39;</span><span class="p">)</span>
+    <span class="n">history_past_diseases</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span><span class="s1">&#39;Diseases&#39;</span><span class="p">)</span>
+    <span class="n">history_social_diseases</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span><span class="s1">&#39;Diseases&#39;</span><span class="p">)</span>
+    <span class="n">assessment_diseases</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span><span class="s1">&#39;Diseases&#39;</span><span class="p">)</span>
+
+    <span class="n">medications</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span><span class="s1">&#39;Medications&#39;</span><span class="p">)</span>
+    <span class="n">allergy_medications</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span><span class="s1">&#39;Medications&#39;</span><span class="p">)</span>
+
     <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s1">&#39;Submit&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SearchForm"><a class="viewcode-back" href="../../api.html#app.forms.SearchForm">[docs]</a><span class="k">class</span> <span class="nc">SearchForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="n">search_text</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s1">&#39;MRN&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">InputRequired</span><span class="p">()])</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s1">&#39;Search&#39;</span><span class="p">)</span>
+    <span class="n">reset_button</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s1">&#39;Reset&#39;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -89,6 +103,7 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../url.html">URL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../requirements.html">Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial for Deploying</a></li>
@@ -130,7 +145,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019, Anish Dalal, Nicole Kacirek, Sarah Melancon, Darren Thomas, Tyler Ursuy.
+      &copy;2019, Anish Dalal, Nicole Kacirek, Darren Thomas, Sarah Melancon, Tyler Ursuy.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>

@@ -1,5 +1,5 @@
 Introduction
-================
+============
 Physicians and practitioners unfortunately spend too much time manually entering data into an EMR (Electronic Medical Record) system.
 Our solution to this problem involves preserving the clarity and completeness that an EMR provides without
 compromising physician efficiency and the patient experience. With our proprietary ARMR System

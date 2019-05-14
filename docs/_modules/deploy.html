@@ -58,8 +58,6 @@
 <div class="viewcode-block" id="create_or_update_environment"><a class="viewcode-back" href="../api.html#deploy.create_or_update_environment">[docs]</a><span class="k">def</span> <span class="nf">create_or_update_environment</span><span class="p">(</span><span class="n">ssh</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate or update an enviornment.yml file with all dependencies&quot;&quot;&quot;</span>
     <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;sudo yum -y install gcc&quot;</span><span class="p">)</span>
-    <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;git -C </span><span class="si">{}</span><span class="s2"> checkout </span><span class="se">\</span>
-<span class="s2">        spacy-functions&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">git_repo_name</span><span class="p">))</span>
     <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> \
         <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;conda env create -f &quot;</span>
                          <span class="s2">&quot;~/</span><span class="si">{}</span><span class="s2">/environment.yml&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">git_repo_name</span><span class="p">))</span>
@@ -123,12 +121,13 @@
     <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;~/.conda/envs/armr/bin/aws </span><span class="se">\</span>
 <span class="s2">            s3 ls msds-armr --recursive | sort | tail -n 1 | awk &#39;{print $4}&#39;&quot;</span><span class="p">)</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
     <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;~/.conda/envs/armr/bin/aws </span><span class="se">\</span>
-<span class="s2">            s3 cp s3://</span><span class="si">{bucket_name}</span><span class="s2">/</span><span class="si">{model}</span><span class="s2"> ~/en_ner_bc5cdr_md-0.1.0.zip&quot;</span><span class="p">)</span>
+<span class="s2">            s3 cp s3://</span><span class="si">{bucket_name}</span><span class="s2">/</span><span class="si">{model}</span><span class="s2"> ~/</span><span class="si">{model}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
     <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> \
-        <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;unzip ~/en_ner_bc5cdr_md-0.1.0.zip -d </span><span class="se">\</span>
-<span class="s2">        ~/</span><span class="si">{}</span><span class="s2">/models/&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">git_repo_name</span><span class="p">))</span>
+        <span class="n">ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">&quot;unzip ~/</span><span class="si">{}</span><span class="s2"> -d </span><span class="se">\</span>
+<span class="s2">        ~/</span><span class="si">{}</span><span class="s2">/models/&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">git_repo_name</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
 
 
@@ -173,6 +172,7 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../url.html">URL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../requirements.html">Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial for Deploying</a></li>
@@ -214,7 +214,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019, Anish Dalal, Nicole Kacirek, Sarah Melancon, Darren Thomas, Tyler Ursuy.
+      &copy;2019, Anish Dalal, Nicole Kacirek, Darren Thomas, Sarah Melancon, Tyler Ursuy.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>

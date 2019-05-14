@@ -4,6 +4,10 @@ API
     :members:
     :undoc-members:
 
+.. automodule:: retrain
+    :members:
+    :undoc-members:
+
 .. automodule:: app.classes
     :members:
     :undoc-members:

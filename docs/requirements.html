@@ -41,10 +41,8 @@
 <li>ec2 medium instance (or more powerful instance) using Anaconda with Python 3 AMI</li>
 <li>configure git</li>
 <li>Set inbound security rules in AWS to allow port 80 traffic</li>
+<li>Please make sure ec2 instance has .aws folder located in /home/ec2-user and has file called credentials in /home/ec2-user/.aws . Because ARMR’s models are stored and versioned in S3 with public access, you must have AWS credentials present on server so aws cli in ARMR’s conda environment can pull model from public S3 bucket. The credential file must be formatted in the following way:</li>
 </ol>
-<p>5. Please make sure ec2 instance has .aws folder located in /home/ec2-user and has file called credentials in /home/ec2-user/.aws . Because ARMR’s models are
-stored and versioned in S3 with public access, you must have AWS credentials present on server so aws cli in ARMR’s conda environment
-can pull model from public S3 bucket. The credential file must be formatted in the following way:</p>
 <p>[default]</p>
 <p>aws_access_key_id = &lt;aws_access_key_id&gt;</p>
 <p>aws_secret_access_key = &lt;aws_secret_access_key&gt;</p>
@@ -112,7 +110,7 @@ can pull model from public S3 bucket. The credential file must be formatted in t
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019, Anish Dalal, Nicole Kacirek, Sarah Melancon, Darren Thomas, Tyler Ursuy.
+      &copy;2019, Anish Dalal, Nicole Kacirek, Darren Thomas, Sarah Melancon, Tyler Ursuy.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
