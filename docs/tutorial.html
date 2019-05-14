@@ -39,11 +39,11 @@
 <ol class="arabic simple">
 <li>Ensure all stated requirements are satisfied in Requirements section</li>
 <li>On your local machine, run git clone <a class="reference external" href="https://github.com/MSDS698/ARMR.git">https://github.com/MSDS698/ARMR.git</a></li>
-<li>run <cite>conda env create -f environment.yml</cite> from command line to get required packages</li>
-<li>run <cite>conda activate armr</cite> in terminal</li>
+<li>run <em>conda env create -f environment.yml</em> from command line to get required packages</li>
+<li>run <em>conda activate armr</em> in terminal</li>
 <li>cd ARMR/code</li>
 <li>In user_definition.py specify ec2_address, key_file, user as ec2-user, and git_user_id</li>
-<li>run <cite>python deploy.py</cite> in terminal</li>
+<li>run python <em>deploy.py</em> in terminal</li>
 </ol>
 </div>
 <div class="section" id="tutorial-for-using-armr">
@@ -52,9 +52,9 @@
 <li>go to the EC2 public IP address in your browser</li>
 <li>register if you are a new user</li>
 <li>login with your credentials</li>
-<li>upload audio file (must be a .wav file) and create medical record number</li>
-<li>submit audio file</li>
-<li>review and make appropriate edits</li>
+<li>upload audio file (must be a .wav file) and enter a 7 digit number</li>
+<li>submit audio file - the audio file will have status of “Processing” in the Status Page</li>
+<li>when the status is “Read for Review”, click and make any edits on the record page</li>
 <li>submit</li>
 <li>repeat steps 5-7 as necessary</li>
 <li>logout</li>
@@ -81,6 +81,7 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="url.html">URL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial for Deploying</a></li>
@@ -122,7 +123,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019, Anish Dalal, Nicole Kacirek, Sarah Melancon, Darren Thomas, Tyler Ursuy.
+      &copy;2019, Anish Dalal, Nicole Kacirek, Darren Thomas, Sarah Melancon, Tyler Ursuy.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>

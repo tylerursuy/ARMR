@@ -1,23 +1,21 @@
-=======================
 Tutorial for Deploying
-=======================
+======================
 1. Ensure all stated requirements are satisfied in Requirements section
 2. On your local machine, run git clone https://github.com/MSDS698/ARMR.git
-3. run `conda env create -f environment.yml` from command line to get required packages
-4. run `conda activate armr` in terminal
+3. run *conda env create -f environment.yml* from command line to get required packages
+4. run *conda activate armr* in terminal
 5. cd ARMR/code
 6. In user_definition.py specify ec2_address, key_file, user as ec2-user, and git_user_id
-7. run `python deploy.py` in terminal
+7. run python *deploy.py* in terminal
 
-=======================
 Tutorial for Using ARMR
 =======================
 1. go to the EC2 public IP address in your browser
 2. register if you are a new user
 3. login with your credentials
-4. upload audio file (must be a .wav file) and create medical record number
-5. submit audio file
-6. review and make appropriate edits
+4. upload audio file (must be a .wav file) and enter a 7 digit number
+5. submit audio file - the audio file will have status of "Processing" in the Status Page
+6. when the status is "Read for Review", click and make any edits on the record page
 7. submit
 8. repeat steps 5-7 as necessary
 9. logout
